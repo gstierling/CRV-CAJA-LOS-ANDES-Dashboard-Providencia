@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activación CLA · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    padding: 2rem 1.5rem 3rem;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* Header */
+  .header { margin-bottom: 2rem; }
+  .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #00d4aa; animation: pulse 1.8s infinite; flex-shrink: 0; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.85)} }
+  .title { font-size: 1.5rem; font-weight: 800; color: #f97316; }
+  .subtitle { font-size: 0.85rem; color: #8b949e; margin-left: 18px; }
+  .last-updated { font-size: 0.75rem; color: #8b949e; margin-left: 18px; margin-top: 2px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 2rem; }
+  .tab {
+    padding: 7px 20px;
+    border-radius: 8px;
+    border: 1px solid #30363d;
+    font-size: 0.85rem;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    background: transparent;
+    color: #8b949e;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .tab:hover { border-color: #f97316; color: #f97316; }
+  .tab.active { background: #f97316; color: #0d1117; border-color: #f97316; }
+
+  /* Section label */
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8b949e;
+    margin-bottom: 10px;
+    margin-top: 1.5rem;
+  }
+
+  /* Metric cards */
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .metric-card {
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .metric-label { font-size: 0.75rem; color: #8b949e; margin-bottom: 4px; font-weight: 600; }
+  .metric-value { font-size: 2.2rem; font-weight: 800; color: #e6edf3; line-height: 1; }
+  .metric-rate { font-size: 0.7rem; color: #8b949e; margin-top: 5px; }
+  .metric-card.afiliado .metric-value { color: #00d4aa; }
+  .metric-card.noafiliado .metric-value { color: #f97316; }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid #21262d; margin: 1.75rem 0; }
+
+  /* Total servicios */
+  .total-svc-card {
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .total-svc-label { font-size: 0.75rem; color: #8b949e; font-weight: 600; }
+  .total-svc-value { font-size: 2rem; font-weight: 800; color: #e6edf3; }
+  .total-svc-rate { font-size: 0.75rem; color: #8b949e; margin-left: auto; }
+
+  /* Services grid */
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+  .service-card {
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .service-name { font-size: 0.75rem; color: #8b949e; margin-bottom: 4px; font-weight: 600; line-height: 1.4; }
+  .service-value { font-size: 1.8rem; font-weight: 800; color: #e6edf3; }
+  .service-rate { font-size: 0.7rem; color: #8b949e; margin-top: 4px; }
+
+  /* Error */
+  .error-msg {
+    background: #1f1419;
+    border: 1px solid #6e3535;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #f47067;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* Footer */
+  .footer { margin-top: 2.5rem; text-align: center; font-size: 0.7rem; color: #8b949e; }
+  .footer a { color: #00d4aa; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-top">
+      <span class="live-dot"></span>
+      <span class="title">Activación CLA</span>
+    </div>
+    <div class="subtitle">Registros en tiempo real · CicloRecreoVía</div>
+    <div class="last-updated" id="last-updated">Cargando…</div>
+  </div>
+
+  <div id="error-msg" class="error-msg"></div>
+
+  <div class="tabs">
+    <button class="tab active" data-min="15" onclick="setWindow(15)">Últimos 15 min</button>
+    <button class="tab" data-min="30" onclick="setWindow(30)">Últimos 30 min</button>
+    <button class="tab" data-min="60" onclick="setWindow(60)">Últimos 60 min</button>
+  </div>
+
+  <div class="section-label">Resumen</div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">Consultas</div>
+      <div class="metric-value" id="val-total">—</div>
+      <div class="metric-rate" id="rate-total">— / min</div>
+    </div>
+    <div class="metric-card afiliado">
+      <div class="metric-label">Afiliados</div>
+      <div class="metric-value" id="val-si">—</div>
+      <div class="metric-rate" id="rate-si">— / min</div>
+    </div>
+    <div class="metric-card noafiliado">
+      <div class="metric-label">No afiliados</div>
+      <div class="metric-value" id="val-no">—</div>
+      <div class="metric-rate" id="rate-no">— / min</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Servicios</div>
+
+  <div class="total-svc-card">
+    <div>
+      <div class="total-svc-label">Total servicios seleccionados</div>
+      <div class="total-svc-value" id="val-svc-total">—</div>
+    </div>
+    <div class="total-svc-rate" id="rate-svc-total">— / min</div>
+  </div>
+
+  <div class="services-grid" id="services-grid"></div>
+
+  <div class="footer">
+    Actualización automática cada 30 segundos &nbsp;·&nbsp;
+    <a href="https://docs.google.com/spreadsheets/d/1J48WDExtFgjx22Zf9rjTR8IdhAmffc_Dzpw086Cimeo/edit" target="_blank">Ver planilla</a>
+  </div>
+
+</div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgndIP_bFGXJWbQgdvRlszrL4rqZzkeNuI7iXxkNiuW9HMSHA0oZIfIKo7Zu31HYnn7K_LbuHpkCTK/pub?gid=1084445575&single=true&output=csv";
+const ALL_SERVICES = ["Préstamo de bicicleta", "Kit saludable (Agua + Fruta)", "Reparaciones mecánicas"];
+let records = [];
+let currentWindow = 15;
+
+function parseTS(str) {
+  if (!str) return null;
+  try {
+    const isPM = /p\.\s*m\./.test(str);
+    const clean = str.replace(/[ap]\.\s*m\./g, "").trim();
+    const [datePart, timePart] = clean.split(", ");
+    if (!datePart || !timePart) return null;
+    const [d, m, y] = datePart.split("-").map(Number);
+    let [h, min, s] = timePart.trim().split(":").map(Number);
+    if (isPM && h !== 12) h += 12;
+    if (!isPM && h === 12) h = 0;
+    return new Date(y, m - 1, d, h, min, s || 0);
+  } catch(e) { return null; }
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  const result = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const fields = [];
+    let cur = "", inQ = false;
+    for (let c = 0; c < line.length; c++) {
+      const ch = line[c];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { fields.push(cur); cur = ""; }
+      else { cur += ch; }
+    }
+    fields.push(cur);
+    const ts = (fields[0] || "").replace(/^"|"$/g, "");
+    const pertenece = (fields[2] || "").replace(/^"|"$/g, "").trim();
+    const servicios = (fields[3] || "").replace(/^"|"$/g, "").trim();
+    const date = parseTS(ts);
+    if (date) result.push({ pertenece, servicios, date });
+  }
+  return result;
+}
+
+async function fetchData() {
+  try {
+    const res = await fetch(CSV_URL + "&cb=" + Date.now());
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    records = parseCSV(text);
+    document.getElementById("error-msg").style.display = "none";
+  } catch(e) {
+    const el = document.getElementById("error-msg");
+    el.style.display = "block";
+    el.textContent = "No se pudo cargar la planilla: " + e.message;
+  }
+  render();
+}
+
+function setWindow(mins) {
+  currentWindow = mins;
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", +b.dataset.min === mins));
+  render();
+}
+
+function render() {
+  const now = new Date();
+  const cutoff = new Date(now.getTime() - currentWindow * 60000);
+  const subset = records.filter(r => r.date >= cutoff);
+  const mins = currentWindow;
+
+  const total = subset.length;
+  const si = subset.filter(r => r.pertenece === "Sí pertenece").length;
+  const no = subset.filter(r => r.pertenece === "No pertenece").length;
+
+  const svcCounts = {};
+  ALL_SERVICES.forEach(s => svcCounts[s] = 0);
+  let totalSvc = 0;
+  subset.forEach(r => {
+    if (r.servicios) {
+      r.servicios.split(" | ").forEach(s => {
+        s = s.trim();
+        if (s in svcCounts) { svcCounts[s]++; totalSvc++; }
+      });
+    }
+  });
+
+  const fmt = v => v.toFixed(2);
+
+  document.getElementById("val-total").textContent = total;
+  document.getElementById("rate-total").textContent = fmt(total / mins) + " / min";
+  document.getElementById("val-si").textContent = si;
+  document.getElementById("rate-si").textContent = fmt(si / mins) + " / min";
+  document.getElementById("val-no").textContent = no;
+  document.getElementById("rate-no").textContent = fmt(no / mins) + " / min";
+  document.getElementById("val-svc-total").textContent = totalSvc;
+  document.getElementById("rate-svc-total").textContent = fmt(totalSvc / mins) + " / min";
+
+  const grid = document.getElementById("services-grid");
+  grid.innerHTML = "";
+  ALL_SERVICES.forEach(s => {
+    const c = svcCounts[s] || 0;
+    const card = document.createElement("div");
+    card.className = "service-card";
+    card.innerHTML = `<div class="service-name">${s}</div><div class="service-value">${c}</div><div class="service-rate">${fmt(c / mins)} / min</div>`;
+    grid.appendChild(card);
+  });
+
+  document.getElementById("last-updated").textContent =
+    "Actualizado " + now.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
+fetchData();
+setInterval(fetchData, 30000);
+</script>
+</body>
+</html>
