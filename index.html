@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Activación CLA · Dashboard</title>
+<title>CLA Providencia · Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -27,12 +26,12 @@
 
   /* Header */
   .header { margin-bottom: 2rem; text-align: center; }
-  .header-top { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4px; }
+  .header-top { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 2px; }
   .live-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--orange); flex-shrink: 0; animation: pulse 1.8s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.8)} }
-  .title { font-size: 2rem; font-weight: 900; color: var(--white); letter-spacing: 0.04em; }
-  .subtitle { font-size: 0.9rem; color: var(--muted); margin-top: 2px; }
-  .last-updated { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+  .title { font-size: 2.2rem; font-weight: 900; color: var(--white); letter-spacing: 0.04em; }
+  .title-sub { font-size: 1.3rem; font-weight: 700; color: rgba(255,255,255,0.7); margin-top: 0; }
+  .last-updated { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
 
   .error-msg { background: rgba(150,20,20,0.4); border: 1px solid rgba(255,100,100,0.4); border-radius: 10px; padding: 14px 18px; color: #ffaaaa; font-size: 1rem; margin-bottom: 1.5rem; display: none; }
 
@@ -41,52 +40,67 @@
   .btn-total { display: block; width: 100%; padding: 18px; background: var(--surface); border: 2px solid var(--border); border-radius: 14px; color: var(--white); font-family: 'Nunito', sans-serif; font-size: 1.6rem; font-weight: 900; letter-spacing: 0.1em; cursor: pointer; margin-bottom: 1.2rem; transition: all 0.15s; }
   .btn-total:hover { background: rgba(0,0,0,0.35); }
   .btn-total.active { background: var(--orange); border-color: var(--orange); }
-  .ultimos-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 10px; }
+  .ultimos-label { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 10px; }
   .tabs { display: flex; gap: 10px; }
   .tab { flex: 1; padding: 13px 10px; border-radius: 12px; border: 2px solid var(--border); font-size: 1rem; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; background: var(--surface); color: var(--white); transition: all 0.15s; text-align: center; }
   .tab:hover { background: rgba(0,0,0,0.35); }
   .tab.active { background: var(--orange); border-color: var(--orange); }
 
-  /* Big metric */
-  .big-metric { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 28px 28px 22px; margin-bottom: 14px; text-align: center; }
-  .big-metric-label { font-size: 1rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-  .big-metric-value { font-size: 5rem; font-weight: 900; color: var(--white); line-height: 1; }
-  .big-metric-rate { font-size: 0.9rem; color: var(--muted); margin-top: 10px; font-weight: 600; }
+  /* TRANSACCIONES comprimido */
+  .trans-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 24px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .trans-left { display: flex; flex-direction: column; }
+  .trans-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .trans-value { font-size: 4rem; font-weight: 900; color: var(--white); line-height: 1; }
+  .trans-rate { font-size: 1.4rem; font-weight: 800; color: rgba(255,255,255,0.75); }
 
-  /* Chart card */
-  .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 20px 20px 0; margin-bottom: 14px; }
-
-  /* Barras custom */
-  .bars-wrap { display: flex; align-items: flex-end; justify-content: space-around; gap: 14px; padding: 0 10px; min-height: 200px; position: relative; }
-  .bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; }
-  .bar-val { font-size: 1.6rem; font-weight: 900; color: var(--white); margin-bottom: 6px; }
-  .bar-outer { width: 100%; border-radius: 10px 10px 0 0; display: flex; align-items: flex-end; overflow: hidden; }
-  .bar-inner { width: 100%; border-radius: 10px 10px 0 0; transition: height 0.4s ease; }
+  /* Barras */
+  .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 16px 0; margin-bottom: 14px; }
+  .bars-wrap { display: flex; align-items: flex-end; justify-content: space-around; gap: 14px; padding: 0 6px; height: 200px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; height: 100%; position: relative; }
+  .bar-stack { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; }
+  .bar-val { font-size: 1.4rem; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 4px; }
+  .bar-inner { width: 100%; border-radius: 10px 10px 0 0; min-height: 4px; }
   .bar-rate-row { display: flex; width: 100%; }
-  .bar-rate { flex: 1; text-align: center; font-size: 0.7rem; font-weight: 700; color: var(--muted); padding: 6px 4px 14px; }
+  .bar-rate { flex: 1; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--muted); padding: 6px 2px 12px; }
   .bar-label-row { display: flex; width: 100%; border-top: 1px solid var(--border); }
   .bar-label { flex: 1; text-align: center; font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.85); padding: 10px 4px 12px; }
 
   /* Divider */
   .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 
-  /* Section label */
-  .section-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  /* Section label grande */
+  .section-label-big { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
 
-  /* Consultas - franja horizontal */
-  .consultas-strip { display: flex; gap: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-  .consulta-item { flex: 1; padding: 20px 16px; text-align: center; border-right: 1px solid var(--border); }
-  .consulta-item:last-child { border-right: none; }
-  .consulta-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
-  .consulta-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
-  .consulta-value.afiliado { color: #b2ebf2; }
-  .consulta-value.noafiliado { color: var(--orange); }
-  .consulta-rate { font-size: 0.75rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
+  /* Franja horizontal */
+  .strip { display: flex; gap: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 0; }
+  .strip-item { flex: 1; padding: 18px 12px; text-align: center; border-right: 1px solid var(--border); }
+  .strip-item:last-child { border-right: none; }
+  .strip-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+  .strip-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
+  .strip-value.afiliado { color: #b2ebf2; }
+  .strip-value.noafiliado { color: var(--orange); }
+  .strip-value.s1 { color: #fde047; }
+  .strip-value.s2 { color: #a78bfa; }
+  .strip-value.s3 { color: #34d399; }
+  .strip-rate { font-size: 0.85rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
 
-  /* Footer */
-  .footer { margin-top: 2.5rem; text-align: center; font-size: 0.8rem; color: var(--muted); }
-  .footer a { color: #b2ebf2; text-decoration: none; }
-  .footer a:hover { text-decoration: underline; }
+  /* BBDD button */
+  .bbdd-wrap { margin-top: 2.5rem; text-align: center; }
+  .bbdd-btn {
+    display: inline-block;
+    padding: 12px 36px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: #b2ebf2;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .bbdd-btn:hover { background: rgba(0,0,0,0.35); border-color: #b2ebf2; }
 </style>
 </head>
 <body>
@@ -95,14 +109,15 @@
   <div class="header">
     <div class="header-top">
       <span class="live-dot"></span>
-      <span class="title">Activación CLA</span>
+      <span class="title">CAJA LOS ANDES</span>
     </div>
-    <div class="subtitle">Registros en tiempo real · CicloRecreoVía</div>
+    <div class="title-sub">Providencia</div>
     <div class="last-updated" id="last-updated">Cargando…</div>
   </div>
 
   <div id="error-msg" class="error-msg"></div>
 
+  <!-- Selector -->
   <div class="selector-block">
     <button class="btn-total active" data-min="0" onclick="setWindow(0)">TOTAL</button>
     <div class="ultimos-label">Últimos</div>
@@ -113,45 +128,69 @@
     </div>
   </div>
 
-  <!-- TRANSACCIONES big number -->
-  <div class="big-metric">
-    <div class="big-metric-label">Transacciones</div>
-    <div class="big-metric-value" id="val-svc-total">—</div>
-    <div class="big-metric-rate" id="rate-svc-total">— x min</div>
+  <!-- TRANSACCIONES comprimido -->
+  <div class="trans-block">
+    <div class="trans-left">
+      <div class="trans-label">Transacciones</div>
+      <div class="trans-value" id="val-svc-total">—</div>
+    </div>
+    <div class="trans-rate" id="rate-svc-total">— x min</div>
   </div>
 
-  <!-- Barras custom -->
+  <!-- Barras -->
   <div class="chart-card">
-    <div class="bars-wrap" id="bars-wrap">
-      <!-- generado por JS -->
-    </div>
+    <div class="bars-wrap" id="bars-wrap"></div>
+    <div class="bar-rate-row" id="bar-rates"></div>
     <div class="bar-label-row" id="bar-labels"></div>
   </div>
 
   <hr class="divider">
 
-  <div class="section-label">Consultas</div>
-  <div class="consultas-strip">
-    <div class="consulta-item">
-      <div class="consulta-label">Totales</div>
-      <div class="consulta-value" id="val-total">—</div>
-      <div class="consulta-rate" id="rate-total">— x min</div>
+  <!-- REGISTROS -->
+  <div class="section-label-big">Registros</div>
+  <div class="strip">
+    <div class="strip-item">
+      <div class="strip-label">Totales</div>
+      <div class="strip-value" id="val-total">—</div>
+      <div class="strip-rate" id="rate-total">— x min</div>
     </div>
-    <div class="consulta-item">
-      <div class="consulta-label">Afiliados</div>
-      <div class="consulta-value afiliado" id="val-si">—</div>
-      <div class="consulta-rate" id="rate-si">— x min</div>
+    <div class="strip-item">
+      <div class="strip-label">Afiliados</div>
+      <div class="strip-value afiliado" id="val-si">—</div>
+      <div class="strip-rate" id="rate-si">— x min</div>
     </div>
-    <div class="consulta-item">
-      <div class="consulta-label">No afiliados</div>
-      <div class="consulta-value noafiliado" id="val-no">—</div>
-      <div class="consulta-rate" id="rate-no">— x min</div>
+    <div class="strip-item">
+      <div class="strip-label">No afiliados</div>
+      <div class="strip-value noafiliado" id="val-no">—</div>
+      <div class="strip-rate" id="rate-no">— x min</div>
     </div>
   </div>
 
-  <div class="footer">
-    Actualización automática cada 30 segundos &nbsp;·&nbsp;
-    <a href="https://docs.google.com/spreadsheets/d/1J48WDExtFgjx22Zf9rjTR8IdhAmffc_Dzpw086Cimeo/edit" target="_blank">Ver planilla</a>
+  <hr class="divider">
+
+  <!-- AFILIADOS USAN SERVICIOS -->
+  <div class="section-label-big">Afiliados usan servicios</div>
+  <div class="strip">
+    <div class="strip-item">
+      <div class="strip-label">1 Servicio</div>
+      <div class="strip-value s1" id="val-s1">—</div>
+      <div class="strip-rate" id="rate-s1">— x min</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-label">2 Servicios</div>
+      <div class="strip-value s2" id="val-s2">—</div>
+      <div class="strip-rate" id="rate-s2">— x min</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-label">3 Servicios</div>
+      <div class="strip-value s3" id="val-s3">—</div>
+      <div class="strip-rate" id="rate-s3">— x min</div>
+    </div>
+  </div>
+
+  <!-- BBDD -->
+  <div class="bbdd-wrap">
+    <a class="bbdd-btn" href="https://docs.google.com/spreadsheets/d/1J48WDExtFgjx22Zf9rjTR8IdhAmffc_Dzpw086Cimeo/edit" target="_blank">BBDD</a>
   </div>
 
 </div>
@@ -160,9 +199,9 @@
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgndIP_bFGXJWbQgdvRlszrL4rqZzkeNuI7iXxkNiuW9HMSHA0oZIfIKo7Zu31HYnn7K_LbuHpkCTK/pub?gid=1084445575&single=true&output=csv";
 
 const SVCS = [
-  { key: "Préstamo de bicicleta",       label: "Bicis",       color: "#f97316" },
-  { key: "Kit saludable (Agua + Fruta)", label: "Kits",        color: "#fde047" },
-  { key: "Reparaciones mecánicas",       label: "Mecánica",    color: "#a78bfa" },
+  { key: "Préstamo de bicicleta",        label: "Bicis",    color: "#f97316" },
+  { key: "Kit saludable (Agua + Fruta)",  label: "Kits",     color: "#fde047" },
+  { key: "Reparaciones mecánicas",        label: "Mecánica", color: "#a78bfa" },
 ];
 
 let records = [];
@@ -243,11 +282,13 @@ function render() {
   const cutoff = isTotal ? new Date(0) : new Date(now.getTime() - currentWindow * 60000);
   const subset = records.filter(r => r.date >= cutoff);
   const mins = getMins();
+  const fmt = v => v.toFixed(2);
 
   const total = subset.length;
   const si = subset.filter(r => r.pertenece === "Sí pertenece").length;
   const no = subset.filter(r => r.pertenece === "No pertenece").length;
 
+  // Servicios por registro
   const svcCounts = {};
   SVCS.forEach(s => svcCounts[s.key] = 0);
   let totalSvc = 0;
@@ -260,13 +301,21 @@ function render() {
     }
   });
 
-  const fmt = v => v.toFixed(2);
+  // Afiliados que usan 1, 2 o 3 servicios
+  let s1 = 0, s2 = 0, s3 = 0;
+  subset.filter(r => r.pertenece === "Sí pertenece").forEach(r => {
+    if (!r.servicios) return;
+    const n = r.servicios.split(" | ").filter(x => x.trim()).length;
+    if (n === 1) s1++;
+    else if (n === 2) s2++;
+    else if (n >= 3) s3++;
+  });
 
-  // Big number
+  // TRANSACCIONES
   document.getElementById("val-svc-total").textContent = totalSvc;
   document.getElementById("rate-svc-total").textContent = fmt(totalSvc / mins) + " x min";
 
-  // Consultas strip
+  // REGISTROS
   document.getElementById("val-total").textContent = total;
   document.getElementById("rate-total").textContent = fmt(total / mins) + " x min";
   document.getElementById("val-si").textContent = si;
@@ -274,33 +323,44 @@ function render() {
   document.getElementById("val-no").textContent = no;
   document.getElementById("rate-no").textContent = fmt(no / mins) + " x min";
 
-  // Barras custom
+  // AFILIADOS USAN SERVICIOS
+  document.getElementById("val-s1").textContent = s1;
+  document.getElementById("rate-s1").textContent = fmt(s1 / mins) + " x min";
+  document.getElementById("val-s2").textContent = s2;
+  document.getElementById("rate-s2").textContent = fmt(s2 / mins) + " x min";
+  document.getElementById("val-s3").textContent = s3;
+  document.getElementById("rate-s3").textContent = fmt(s3 / mins) + " x min";
+
+  // Barras
   const counts = SVCS.map(s => svcCounts[s.key] || 0);
   const maxVal = Math.max(...counts, 1);
-  const BAR_MAX_H = 180; // px
+  const BAR_MAX_H = 160;
 
   const wrap = document.getElementById("bars-wrap");
+  const ratesRow = document.getElementById("bar-rates");
   const labelsRow = document.getElementById("bar-labels");
   wrap.innerHTML = "";
+  ratesRow.innerHTML = "";
   labelsRow.innerHTML = "";
 
   SVCS.forEach((svc, i) => {
     const c = counts[i];
     const barH = Math.max(4, Math.round((c / maxVal) * BAR_MAX_H));
-    const rate = fmt(c / mins);
 
     const col = document.createElement("div");
     col.className = "bar-col";
-    col.style.justifyContent = "flex-end";
-
     col.innerHTML = `
-      <div class="bar-val">${c}</div>
-      <div style="width:100%;height:${BAR_MAX_H}px;display:flex;align-items:flex-end;">
-        <div style="width:100%;height:${barH}px;background:${svc.color};border-radius:10px 10px 0 0;"></div>
+      <div class="bar-stack" style="height:${BAR_MAX_H}px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+        <div class="bar-val" style="margin-bottom:5px;">${c}</div>
+        <div class="bar-inner" style="height:${barH}px;background:${svc.color};"></div>
       </div>
-      <div class="bar-rate">${rate} x min</div>
     `;
     wrap.appendChild(col);
+
+    const rd = document.createElement("div");
+    rd.className = "bar-rate";
+    rd.textContent = fmt(c / mins) + " x min";
+    ratesRow.appendChild(rd);
 
     const lbl = document.createElement("div");
     lbl.className = "bar-label";
