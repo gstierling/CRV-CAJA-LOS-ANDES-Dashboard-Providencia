@@ -37,16 +37,16 @@
 
   /* Selector de fecha */
   .date-block { display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; gap: 6px; }
-  .date-label { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .date-label { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
   .date-input {
     background: var(--surface);
     border: 2px solid var(--border);
-    border-radius: 12px;
+    border-radius: 16px;
     color: var(--white);
     font-family: 'Nunito', sans-serif;
-    font-size: 1.05rem;
+    font-size: 2.1rem;
     font-weight: 700;
-    padding: 10px 18px;
+    padding: 20px 36px;
     cursor: pointer;
     color-scheme: dark;
   }
@@ -94,6 +94,7 @@
   .strip-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
   .strip-value.afiliado { color: #b2ebf2; }
   .strip-value.noafiliado { color: var(--orange); }
+  .strip-value-xl { font-size: 4.5rem; }
   .strip-value.s1 { color: #fde047; }
   .strip-value.s2 { color: #a78bfa; }
   .strip-value.s3 { color: #34d399; }
@@ -124,15 +125,15 @@
   </div>
 
   <!-- RESUMEN -->
-  <div class="section-label-big">Resumen</div>
+  <div class="section-label-big">Resumen totales</div>
   <div class="strip" style="margin-bottom: 2rem;">
     <div class="strip-item">
-      <div class="strip-label">Total Transacciones</div>
-      <div class="strip-value" id="val-resumen-trans">—</div>
+      <div class="strip-label">Afiliados</div>
+      <div class="strip-value afiliado strip-value-xl" id="val-resumen-afi">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">Total Afiliados</div>
-      <div class="strip-value afiliado" id="val-resumen-afi">—</div>
+      <div class="strip-label">Transacciones</div>
+      <div class="strip-value strip-value-xl" id="val-resumen-trans">—</div>
     </div>
   </div>
 
