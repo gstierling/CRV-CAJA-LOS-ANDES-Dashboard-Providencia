@@ -36,21 +36,51 @@
   .error-msg { background: rgba(150,20,20,0.4); border: 1px solid rgba(255,100,100,0.4); border-radius: 10px; padding: 14px 18px; color: #ffaaaa; font-size: 1rem; margin-bottom: 1.5rem; display: none; }
 
   /* Selector de fecha */
-  .date-block { display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; gap: 6px; }
+  .date-block { display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; gap: 8px; position: relative; }
   .date-label { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
-  .date-input {
+  .date-btn {
     background: var(--surface);
     border: 2px solid var(--border);
-    border-radius: 16px;
+    border-radius: 14px;
     color: var(--white);
     font-family: 'Nunito', sans-serif;
-    font-size: 2.1rem;
-    font-weight: 700;
-    padding: 20px 36px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    padding: 10px 28px;
     cursor: pointer;
-    color-scheme: dark;
+    text-align: center;
+    width: 100%;
+    max-width: 420px;
   }
-  .date-input:focus { outline: none; border-color: var(--orange); }
+  .date-btn:hover { border-color: var(--orange); }
+
+  /* Calendario popup */
+  .cal-popup {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #00565f;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    z-index: 50;
+    width: 280px;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  .cal-popup.open { display: block; }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .cal-nav button { background: transparent; border: none; color: var(--white); font-size: 1.2rem; font-weight: 900; cursor: pointer; padding: 4px 10px; border-radius: 8px; }
+  .cal-nav button:hover { background: rgba(255,255,255,0.12); }
+  .cal-month-label { font-size: 1rem; font-weight: 800; text-transform: capitalize; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-dow { font-size: 0.7rem; font-weight: 800; color: var(--muted); text-align: center; padding: 4px 0; }
+  .cal-day { font-size: 0.85rem; font-weight: 700; text-align: center; padding: 8px 0; border-radius: 8px; cursor: pointer; color: var(--white); }
+  .cal-day:hover { background: rgba(255,255,255,0.15); }
+  .cal-day.empty { cursor: default; }
+  .cal-day.empty:hover { background: transparent; }
+  .cal-day.selected { background: var(--orange); }
 
   /* Selector */
   .selector-block { margin-bottom: 2.5rem; }
@@ -95,6 +125,8 @@
   .strip-value.afiliado { color: #b2ebf2; }
   .strip-value.noafiliado { color: var(--orange); }
   .strip-value-xl { font-size: 4.5rem; }
+  .strip-item-compact { padding: 10px 12px; }
+  .strip-label-lg { font-size: 1.1rem; font-weight: 800; color: rgba(255,255,255,0.8); margin-bottom: 2px; }
   .strip-value.s1 { color: #fde047; }
   .strip-value.s2 { color: #a78bfa; }
   .strip-value.s3 { color: #34d399; }
@@ -120,19 +152,27 @@
 
   <!-- Selector de fecha -->
   <div class="date-block">
-    <label for="date-picker" class="date-label">Fecha</label>
-    <input type="date" id="date-picker" class="date-input" onchange="onDateChange()">
+    <label class="date-label">Seleccionar fecha</label>
+    <button type="button" id="date-btn" class="date-btn" onclick="toggleCalendar()">Cargando…</button>
+    <div id="cal-popup" class="cal-popup">
+      <div class="cal-nav">
+        <button type="button" onclick="calShiftMonth(-1)">‹</button>
+        <span class="cal-month-label" id="cal-month-label">—</span>
+        <button type="button" onclick="calShiftMonth(1)">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
   </div>
 
   <!-- RESUMEN -->
   <div class="section-label-big">Resumen totales</div>
   <div class="strip" style="margin-bottom: 2rem;">
-    <div class="strip-item">
-      <div class="strip-label">Afiliados</div>
+    <div class="strip-item strip-item-compact">
+      <div class="strip-label strip-label-lg">Afiliados</div>
       <div class="strip-value afiliado strip-value-xl" id="val-resumen-afi">—</div>
     </div>
-    <div class="strip-item">
-      <div class="strip-label">Transacciones</div>
+    <div class="strip-item strip-item-compact">
+      <div class="strip-label strip-label-lg">Transacciones</div>
       <div class="strip-value strip-value-xl" id="val-resumen-trans">—</div>
     </div>
   </div>
@@ -247,12 +287,87 @@ function loadStateFromURL() {
   };
 }
 
-function onDateChange() {
-  const val = document.getElementById("date-picker").value;
-  selectedDate = val ? val : null;
+const DOW_NAMES = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const MONTH_NAMES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+
+let calViewYear, calViewMonth;
+
+function formatDateLong(dateStr) {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return DOW_NAMES[dt.getDay()] + " " + d + " " + MONTH_NAMES[m - 1] + " " + y;
+}
+
+function updateDateBtnLabel() {
+  const btn = document.getElementById("date-btn");
+  btn.textContent = selectedDate ? formatDateLong(selectedDate) : "Seleccionar fecha";
+}
+
+function toggleCalendar() {
+  const popup = document.getElementById("cal-popup");
+  const willOpen = !popup.classList.contains("open");
+  popup.classList.toggle("open", willOpen);
+  if (willOpen) {
+    if (selectedDate) {
+      const [y, m] = selectedDate.split("-").map(Number);
+      calViewYear = y; calViewMonth = m - 1;
+    } else {
+      const now = new Date();
+      calViewYear = now.getFullYear(); calViewMonth = now.getMonth();
+    }
+    renderCalendar();
+  }
+}
+
+function calShiftMonth(delta) {
+  calViewMonth += delta;
+  if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
+  if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
+  renderCalendar();
+}
+
+function calPickDay(d) {
+  selectedDate = calViewYear + "-" + String(calViewMonth+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
+  updateDateBtnLabel();
+  document.getElementById("cal-popup").classList.remove("open");
   saveStateToURL();
   render();
 }
+
+function renderCalendar() {
+  document.getElementById("cal-month-label").textContent = MONTH_NAMES[calViewMonth] + " " + calViewYear;
+  const grid = document.getElementById("cal-grid");
+  grid.innerHTML = "";
+  ["D","L","M","M","J","V","S"].forEach(d => {
+    const el = document.createElement("div");
+    el.className = "cal-dow";
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+  const firstDow = new Date(calViewYear, calViewMonth, 1).getDay();
+  const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
+  for (let i = 0; i < firstDow; i++) {
+    const el = document.createElement("div");
+    el.className = "cal-day empty";
+    grid.appendChild(el);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement("div");
+    el.className = "cal-day";
+    const key = calViewYear + "-" + String(calViewMonth+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
+    if (key === selectedDate) el.classList.add("selected");
+    el.textContent = d;
+    el.onclick = () => calPickDay(d);
+    grid.appendChild(el);
+  }
+}
+
+document.addEventListener("click", function(e) {
+  const block = document.querySelector(".date-block");
+  if (block && !block.contains(e.target)) {
+    document.getElementById("cal-popup").classList.remove("open");
+  }
+});
 
 function parseTS(str) {
   if (!str) return null;
@@ -505,8 +620,7 @@ setInterval(fetchData, 30000);
   selectedDate = saved.fecha !== null ? saved.fecha : todayKey;
   currentWindow = saved.ventana !== null && !isNaN(saved.ventana) ? saved.ventana : 0;
 
-  const picker = document.getElementById("date-picker");
-  picker.value = selectedDate || todayKey;
+  updateDateBtnLabel();
 
   document.querySelectorAll(".btn-total, .tab").forEach(b => {
     b.classList.toggle("active", +b.dataset.min === currentWindow);
