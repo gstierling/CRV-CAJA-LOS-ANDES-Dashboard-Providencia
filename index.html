@@ -46,19 +46,20 @@
   .tab:hover { background: rgba(0,0,0,0.35); }
   .tab.active { background: var(--orange); border-color: var(--orange); }
 
-  /* TRANSACCIONES comprimido */
+  /* Section label grande — igual para todos los títulos de sección */
+  .section-label-big { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
+
+  /* TRANSACCIONES cuadro — solo número y tasa, sin título dentro */
   .trans-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 24px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .trans-left { display: flex; flex-direction: column; }
-  .trans-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
   .trans-value { font-size: 4rem; font-weight: 900; color: var(--white); line-height: 1; }
   .trans-rate { font-size: 1.4rem; font-weight: 800; color: rgba(255,255,255,0.75); }
 
   /* Barras */
   .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 16px 0; margin-bottom: 14px; }
   .bars-wrap { display: flex; align-items: flex-end; justify-content: space-around; gap: 14px; padding: 0 6px; height: 200px; }
-  .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; height: 100%; position: relative; }
-  .bar-stack { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; }
-  .bar-val { font-size: 1.4rem; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 4px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; height: 100%; }
+  .bar-stack { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+  .bar-val { font-size: 1.4rem; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 5px; }
   .bar-inner { width: 100%; border-radius: 10px 10px 0 0; min-height: 4px; }
   .bar-rate-row { display: flex; width: 100%; }
   .bar-rate { flex: 1; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--muted); padding: 6px 2px 12px; }
@@ -68,11 +69,8 @@
   /* Divider */
   .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 
-  /* Section label grande */
-  .section-label-big { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
-
   /* Franja horizontal */
-  .strip { display: flex; gap: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 0; }
+  .strip { display: flex; gap: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
   .strip-item { flex: 1; padding: 18px 12px; text-align: center; border-right: 1px solid var(--border); }
   .strip-item:last-child { border-right: none; }
   .strip-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
@@ -86,20 +84,7 @@
 
   /* BBDD button */
   .bbdd-wrap { margin-top: 2.5rem; text-align: center; }
-  .bbdd-btn {
-    display: inline-block;
-    padding: 12px 36px;
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    color: #b2ebf2;
-    font-family: 'Nunito', sans-serif;
-    font-size: 1rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    transition: all 0.15s;
-  }
+  .bbdd-btn { display: inline-block; padding: 12px 36px; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; color: #b2ebf2; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; letter-spacing: 0.1em; text-decoration: none; transition: all 0.15s; }
   .bbdd-btn:hover { background: rgba(0,0,0,0.35); border-color: #b2ebf2; }
 </style>
 </head>
@@ -128,12 +113,10 @@
     </div>
   </div>
 
-  <!-- TRANSACCIONES comprimido -->
+  <!-- TRANSACCIONES -->
+  <div class="section-label-big">Transacciones</div>
   <div class="trans-block">
-    <div class="trans-left">
-      <div class="trans-label">Transacciones</div>
-      <div class="trans-value" id="val-svc-total">—</div>
-    </div>
+    <div class="trans-value" id="val-svc-total">—</div>
     <div class="trans-rate" id="rate-svc-total">— x min</div>
   </div>
 
@@ -174,17 +157,14 @@
     <div class="strip-item">
       <div class="strip-label">1 Servicio</div>
       <div class="strip-value s1" id="val-s1">—</div>
-      <div class="strip-rate" id="rate-s1">— x min</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">2 Servicios</div>
       <div class="strip-value s2" id="val-s2">—</div>
-      <div class="strip-rate" id="rate-s2">— x min</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">3 Servicios</div>
       <div class="strip-value s3" id="val-s3">—</div>
-      <div class="strip-rate" id="rate-s3">— x min</div>
     </div>
   </div>
 
@@ -246,6 +226,11 @@ function parseCSV(text) {
   return result;
 }
 
+// Formatea número con 1 decimal y coma como separador
+function fmt(v) {
+  return v.toFixed(1).replace(".", ",");
+}
+
 async function fetchData() {
   try {
     const res = await fetch(CSV_URL + "&cb=" + Date.now());
@@ -282,13 +267,11 @@ function render() {
   const cutoff = isTotal ? new Date(0) : new Date(now.getTime() - currentWindow * 60000);
   const subset = records.filter(r => r.date >= cutoff);
   const mins = getMins();
-  const fmt = v => v.toFixed(2);
 
   const total = subset.length;
   const si = subset.filter(r => r.pertenece === "Sí pertenece").length;
   const no = subset.filter(r => r.pertenece === "No pertenece").length;
 
-  // Servicios por registro
   const svcCounts = {};
   SVCS.forEach(s => svcCounts[s.key] = 0);
   let totalSvc = 0;
@@ -301,7 +284,6 @@ function render() {
     }
   });
 
-  // Afiliados que usan 1, 2 o 3 servicios
   let s1 = 0, s2 = 0, s3 = 0;
   subset.filter(r => r.pertenece === "Sí pertenece").forEach(r => {
     if (!r.servicios) return;
@@ -323,13 +305,10 @@ function render() {
   document.getElementById("val-no").textContent = no;
   document.getElementById("rate-no").textContent = fmt(no / mins) + " x min";
 
-  // AFILIADOS USAN SERVICIOS
+  // AFILIADOS USAN SERVICIOS (sin tasa)
   document.getElementById("val-s1").textContent = s1;
-  document.getElementById("rate-s1").textContent = fmt(s1 / mins) + " x min";
   document.getElementById("val-s2").textContent = s2;
-  document.getElementById("rate-s2").textContent = fmt(s2 / mins) + " x min";
   document.getElementById("val-s3").textContent = s3;
-  document.getElementById("rate-s3").textContent = fmt(s3 / mins) + " x min";
 
   // Barras
   const counts = SVCS.map(s => svcCounts[s.key] || 0);
