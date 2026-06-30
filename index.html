@@ -228,9 +228,28 @@ function dateKey(d) {
   return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
 }
 
+function saveStateToURL() {
+  const params = new URLSearchParams(window.location.search);
+  params.set("fecha", selectedDate || "");
+  params.set("ventana", String(currentWindow));
+  const newUrl = window.location.pathname + "?" + params.toString();
+  window.history.replaceState(null, "", newUrl);
+}
+
+function loadStateFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const fecha = params.get("fecha");
+  const ventana = params.get("ventana");
+  return {
+    fecha: fecha || null,
+    ventana: ventana !== null ? parseInt(ventana, 10) : null
+  };
+}
+
 function onDateChange() {
   const val = document.getElementById("date-picker").value;
   selectedDate = val ? val : null;
+  saveStateToURL();
   render();
 }
 
@@ -289,6 +308,11 @@ async function fetchOnce() {
   return parseCSV(trimmed);
 }
 
+function latestTimestamp(arr) {
+  if (!arr.length) return new Date(0);
+  return arr.reduce((max, r) => r.date > max ? r.date : max, new Date(0));
+}
+
 async function fetchData() {
   let parsed = null;
   let lastErr = null;
@@ -305,11 +329,20 @@ async function fetchData() {
   }
 
   if (parsed) {
-    // REGLA CLAVE: Google Sheets a veces sirve una versión cacheada/parcial de la
-    // publicación CSV. Nunca aceptamos un resultado con MENOS filas que el que ya
-    // tenemos validado — los registros no desaparecen de la planilla, así que una
-    // caída en el conteo siempre significa una respuesta incompleta, nunca un dato real.
-    if (parsed.length >= records.length) {
+    // REGLA CLAVE: Google Sheets publica vía varios servidores/CDN que no siempre
+    // están sincronizados entre sí — a veces uno responde con datos más nuevos y el
+    // siguiente request, aunque posterior en el tiempo, puede caer en un servidor con
+    // una copia más vieja (misma cantidad de filas, pero desactualizada). Por eso
+    // comparamos por el TIMESTAMP MÁS RECIENTE real del contenido, no por el conteo
+    // de filas: solo reemplazamos los datos en pantalla si la nueva respuesta trae
+    // un registro tan nuevo o más nuevo que el que ya teníamos confirmado.
+    const newLatest = latestTimestamp(parsed);
+    const curLatest = latestTimestamp(records);
+    if (newLatest >= curLatest && parsed.length >= records.length) {
+      records = parsed;
+    } else if (newLatest > curLatest) {
+      // Más reciente pero con menos filas (caso raro/edge): igual lo aceptamos,
+      // porque "más reciente" pesa más que "más filas" para reflejar la realidad actual.
       records = parsed;
     }
     document.getElementById("error-msg").style.display = "none";
@@ -326,6 +359,7 @@ function setWindow(mins) {
   document.querySelectorAll(".btn-total, .tab").forEach(b => {
     b.classList.toggle("active", +b.dataset.min === mins);
   });
+  saveStateToURL();
   render();
 }
 
@@ -453,13 +487,25 @@ function render() {
 fetchData();
 setInterval(fetchData, 30000);
 
-// Inicializar selector de fecha con el día de hoy
-(function initDatePicker() {
+// Inicializar selector de fecha y ventana: primero intenta recuperar desde la URL
+// (para que sobrevivan a un refresco completo de la página), si no hay nada guardado
+// usa los valores por defecto (hoy y TOTAL).
+(function initState() {
   const now = new Date();
   const todayKey = dateKey(now);
+  const saved = loadStateFromURL();
+
+  selectedDate = saved.fecha !== null ? saved.fecha : todayKey;
+  currentWindow = saved.ventana !== null && !isNaN(saved.ventana) ? saved.ventana : 0;
+
   const picker = document.getElementById("date-picker");
-  picker.value = todayKey;
-  selectedDate = todayKey;
+  picker.value = selectedDate || todayKey;
+
+  document.querySelectorAll(".btn-total, .tab").forEach(b => {
+    b.classList.toggle("active", +b.dataset.min === currentWindow);
+  });
+
+  saveStateToURL();
 })();
 </script>
 </body>
