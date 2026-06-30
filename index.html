@@ -153,7 +153,7 @@
   <div class="section-label-big">Transacciones</div>
   <div class="trans-block">
     <div class="trans-value" id="val-svc-total">—</div>
-    <div class="trans-rate" id="rate-svc-total">— x min</div>
+    <div class="trans-rate" id="rate-svc-total">—</div>
   </div>
 
   <!-- Barras -->
@@ -171,17 +171,17 @@
     <div class="strip-item">
       <div class="strip-label">Totales</div>
       <div class="strip-value" id="val-total">—</div>
-      <div class="strip-rate" id="rate-total">— x min</div>
+      <div class="strip-rate" id="rate-total">—</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">Afiliados</div>
       <div class="strip-value afiliado" id="val-si">—</div>
-      <div class="strip-rate" id="rate-si">— x min</div>
+      <div class="strip-rate" id="rate-si">—</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">No afiliados</div>
       <div class="strip-value noafiliado" id="val-no">—</div>
-      <div class="strip-rate" id="rate-no">— x min</div>
+      <div class="strip-rate" id="rate-no">—</div>
     </div>
   </div>
 
@@ -292,9 +292,15 @@ function parseCSV(text) {
   return result;
 }
 
-// Formatea número con 1 decimal y coma como separador
-function fmt(v) {
-  return v.toFixed(1).replace(".", ",");
+// Formatea una tasa (count/mins) como "1 cada N segundos"
+function fmtRate(count, mins) {
+  if (count <= 0 || mins <= 0) return "—";
+  const perMin = count / mins;
+  if (perMin <= 0) return "—";
+  const seconds = 60 / perMin;
+  const rounded = seconds >= 10 ? Math.round(seconds) : Math.round(seconds * 10) / 10;
+  const secStr = Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(".", ",");
+  return "1 cada " + secStr + " seg";
 }
 
 async function fetchOnce() {
@@ -428,15 +434,15 @@ function render() {
 
   // TRANSACCIONES
   document.getElementById("val-svc-total").textContent = totalSvc;
-  document.getElementById("rate-svc-total").textContent = fmt(totalSvc / mins) + " x min";
+  document.getElementById("rate-svc-total").textContent = fmtRate(totalSvc, mins);
 
   // REGISTROS
   document.getElementById("val-total").textContent = total;
-  document.getElementById("rate-total").textContent = fmt(total / mins) + " x min";
+  document.getElementById("rate-total").textContent = fmtRate(total, mins);
   document.getElementById("val-si").textContent = si;
-  document.getElementById("rate-si").textContent = fmt(si / mins) + " x min";
+  document.getElementById("rate-si").textContent = fmtRate(si, mins);
   document.getElementById("val-no").textContent = no;
-  document.getElementById("rate-no").textContent = fmt(no / mins) + " x min";
+  document.getElementById("rate-no").textContent = fmtRate(no, mins);
 
   // AFILIADOS USAN SERVICIOS (sin tasa)
   document.getElementById("val-s1").textContent = s1;
@@ -471,7 +477,7 @@ function render() {
 
     const rd = document.createElement("div");
     rd.className = "bar-rate";
-    rd.textContent = fmt(c / mins) + " x min";
+    rd.textContent = fmtRate(c, mins);
     ratesRow.appendChild(rd);
 
     const lbl = document.createElement("div");
