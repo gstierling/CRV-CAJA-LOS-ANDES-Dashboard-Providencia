@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CLA Providencia · Dashboard</title>
+<title>CLA · Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,6 +14,11 @@
     --orange: #f97316;
     --white: #ffffff;
     --muted: rgba(255,255,255,0.6);
+    --prov-color: #f97316;
+    --nunu-color: #fde047;
+    --kit-color: #34d399;
+    --bici-color: #60a5fa;
+    --mec-color:  #a78bfa;
   }
   body {
     background: linear-gradient(160deg, #0097a7 0%, #006978 100%);
@@ -30,45 +35,37 @@
   .live-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--orange); flex-shrink: 0; animation: pulse 1.8s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.8)} }
   .title { font-size: 2.2rem; font-weight: 900; color: var(--white); letter-spacing: 0.04em; }
-  .title-sub { font-size: 1.3rem; font-weight: 700; color: rgba(255,255,255,0.7); margin-top: 0; }
+  .title-sub { font-size: 1.3rem; font-weight: 700; color: rgba(255,255,255,0.7); }
   .last-updated { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
 
+  /* Error */
   .error-msg { background: rgba(150,20,20,0.4); border: 1px solid rgba(255,100,100,0.4); border-radius: 10px; padding: 14px 18px; color: #ffaaaa; font-size: 1rem; margin-bottom: 1.5rem; display: none; }
+
+  /* Section label */
+  .section-label { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
+
+  /* Franja horizontal genérica */
+  .strip { display: flex; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 14px; }
+  .strip-item { flex: 1; padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
+  .strip-item:last-child { border-right: none; }
+  .strip-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .strip-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
+  .strip-rate  { font-size: 0.82rem; color: var(--muted); margin-top: 5px; font-weight: 600; }
+  .strip-value.xl { font-size: 4rem; }
+  .strip-value.prov { color: var(--prov-color); }
+  .strip-value.nunu { color: var(--nunu-color); }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 
   /* Selector de fecha */
   .date-block { display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; gap: 8px; position: relative; }
-  .date-label { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
-  .date-btn {
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    color: var(--white);
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 800;
-    padding: 10px 28px;
-    cursor: pointer;
-    text-align: center;
-    width: 100%;
-    max-width: 420px;
-  }
+  .date-label { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
+  .date-btn { background: var(--surface); border: 2px solid var(--border); border-radius: 14px; color: var(--white); font-family: 'Nunito', sans-serif; font-size: 1.3rem; font-weight: 800; padding: 10px 28px; cursor: pointer; text-align: center; width: 100%; max-width: 420px; }
   .date-btn:hover { border-color: var(--orange); }
 
   /* Calendario popup */
-  .cal-popup {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #00565f;
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    padding: 14px;
-    z-index: 50;
-    width: 280px;
-    display: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  }
+  .cal-popup { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #00565f; border: 2px solid var(--border); border-radius: 14px; padding: 14px; z-index: 50; width: 280px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
   .cal-popup.open { display: block; }
   .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .cal-nav button { background: transparent; border: none; color: var(--white); font-size: 1.2rem; font-weight: 900; cursor: pointer; padding: 4px 10px; border-radius: 8px; }
@@ -82,57 +79,34 @@
   .cal-day.empty:hover { background: transparent; }
   .cal-day.selected { background: var(--orange); }
 
-  /* Selector */
-  .selector-block { margin-bottom: 2.5rem; }
+  /* Botones selector tramo */
+  .selector-block { margin-bottom: 1rem; }
   .btn-total { display: block; width: 100%; padding: 18px; background: var(--surface); border: 2px solid var(--border); border-radius: 14px; color: var(--white); font-family: 'Nunito', sans-serif; font-size: 1.6rem; font-weight: 900; letter-spacing: 0.1em; cursor: pointer; margin-bottom: 1.2rem; transition: all 0.15s; }
   .btn-total:hover { background: rgba(0,0,0,0.35); }
   .btn-total.active { background: var(--orange); border-color: var(--orange); }
   .ultimos-label { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 10px; }
-  .tabs { display: flex; gap: 10px; }
+  .tabs { display: flex; gap: 10px; margin-bottom: 2rem; }
   .tab { flex: 1; padding: 13px 10px; border-radius: 12px; border: 2px solid var(--border); font-size: 1rem; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; background: var(--surface); color: var(--white); transition: all 0.15s; text-align: center; }
   .tab:hover { background: rgba(0,0,0,0.35); }
   .tab.active { background: var(--orange); border-color: var(--orange); }
 
-  /* Section label grande — igual para todos los títulos de sección */
-  .section-label-big { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
-
-  /* TRANSACCIONES cuadro — solo número y tasa, sin título dentro */
-  .trans-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 24px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .trans-value { font-size: 4rem; font-weight: 900; color: var(--white); line-height: 1; }
-  .trans-rate { font-size: 1.4rem; font-weight: 800; color: rgba(255,255,255,0.75); }
-
-  /* Barras */
+  /* Barras dobles por servicio */
   .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 16px 0; margin-bottom: 14px; }
-  .bars-wrap { display: flex; align-items: flex-end; justify-content: space-around; gap: 14px; padding: 0 6px; height: 200px; }
-  .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; height: 100%; }
-  .bar-stack { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-  .bar-val { font-size: 1.4rem; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 5px; }
-  .bar-inner { width: 100%; border-radius: 10px 10px 0 0; min-height: 4px; }
-  .bar-rate-row { display: flex; width: 100%; }
-  .bar-rate { flex: 1; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--muted); padding: 6px 2px 12px; }
-  .bar-label-row { display: flex; width: 100%; border-top: 1px solid var(--border); }
-  .bar-label { flex: 1; text-align: center; font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.85); padding: 10px 4px 12px; }
+  .bars-groups { display: flex; justify-content: space-around; align-items: flex-end; height: 180px; gap: 8px; padding: 0 4px; }
+  .bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+  .bar-group-name { font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.85); text-align: center; padding: 10px 4px 12px; border-top: 1px solid var(--border); width: 100%; }
+  .bars-pair { display: flex; align-items: flex-end; gap: 5px; width: 100%; justify-content: center; }
+  .bar-single { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; }
+  .bar-val { font-size: 0.95rem; font-weight: 900; color: var(--white); margin-bottom: 4px; }
+  .bar-rect { width: 100%; border-radius: 6px 6px 0 0; min-height: 3px; }
+  .bar-sub { font-size: 0.65rem; font-weight: 700; color: var(--muted); text-align: center; margin-top: 4px; }
 
-  /* Divider */
-  .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-
-  /* Franja horizontal */
-  .strip { display: flex; gap: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-  .strip-item { flex: 1; padding: 18px 12px; text-align: center; border-right: 1px solid var(--border); }
-  .strip-item:last-child { border-right: none; }
-  .strip-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
-  .strip-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
-  .strip-value.afiliado { color: #b2ebf2; }
-  .strip-value.noafiliado { color: var(--orange); }
-  .strip-value-xl { font-size: 4.5rem; }
-  .strip-item-compact { padding: 10px 12px; }
-  .strip-label-lg { font-size: 1.1rem; font-weight: 800; color: rgba(255,255,255,0.8); margin-bottom: 2px; }
+  /* AFILIADOS USAN SERVICIOS */
   .strip-value.s1 { color: #fde047; }
   .strip-value.s2 { color: #a78bfa; }
   .strip-value.s3 { color: #34d399; }
-  .strip-rate { font-size: 0.85rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
 
-  /* BBDD button */
+  /* BBDD */
   .bbdd-wrap { margin-top: 2.5rem; text-align: center; }
   .bbdd-btn { display: inline-block; padding: 12px 36px; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; color: #b2ebf2; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; letter-spacing: 0.1em; text-decoration: none; transition: all 0.15s; }
   .bbdd-btn:hover { background: rgba(0,0,0,0.35); border-color: #b2ebf2; }
@@ -141,18 +115,21 @@
 <body>
 <div class="container">
 
+  <!-- Header -->
   <div class="header">
     <div class="header-top">
       <span class="live-dot"></span>
       <span class="title">CAJA LOS ANDES</span>
     </div>
-    <div class="title-sub">Providencia</div>
+    <div class="title-sub">Providencia · Ñuñoa</div>
     <div class="last-updated" id="last-updated">Cargando…</div>
   </div>
 
+  <div id="error-msg" class="error-msg"></div>
+
   <!-- Selector de fecha -->
   <div class="date-block">
-    <label class="date-label">Seleccionar fecha</label>
+    <div class="date-label">Seleccionar fecha</div>
     <button type="button" id="date-btn" class="date-btn" onclick="toggleCalendar()">Cargando…</button>
     <div id="cal-popup" class="cal-popup">
       <div class="cal-nav">
@@ -164,22 +141,41 @@
     </div>
   </div>
 
-  <!-- RESUMEN -->
-  <div class="section-label-big">Resumen totales</div>
-  <div class="strip" style="margin-bottom: 2rem;">
-    <div class="strip-item strip-item-compact">
-      <div class="strip-label strip-label-lg">Afiliados</div>
-      <div class="strip-value afiliado strip-value-xl" id="val-resumen-afi">—</div>
+  <!-- TRANSACCIONES TOTALES RESUMEN -->
+  <div class="section-label">Transacciones totales resumen</div>
+  <div class="strip">
+    <div class="strip-item">
+      <div class="strip-label">Providencia</div>
+      <div class="strip-value prov xl" id="res-prov">—</div>
     </div>
-    <div class="strip-item strip-item-compact">
-      <div class="strip-label strip-label-lg">Transacciones</div>
-      <div class="strip-value strip-value-xl" id="val-resumen-trans">—</div>
+    <div class="strip-item">
+      <div class="strip-label">Ñuñoa</div>
+      <div class="strip-value nunu xl" id="res-nunu">—</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-label">Total</div>
+      <div class="strip-value xl" id="res-total">—</div>
     </div>
   </div>
 
-  <div id="error-msg" class="error-msg"></div>
+  <!-- AFILIADOS ATENDIDOS -->
+  <div class="section-label">Afiliados atendidos</div>
+  <div class="strip">
+    <div class="strip-item">
+      <div class="strip-label">Afiliados atendidos</div>
+      <div class="strip-value xl" id="afi-count">—</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-label">Servicios por afiliado</div>
+      <div class="strip-value xl" id="afi-ratio">—</div>
+    </div>
+  </div>
 
-  <!-- Selector -->
+  <hr class="divider">
+
+  <!-- RESULTADOS POR TRAMO HORARIO -->
+  <div class="section-label">Resultados por tramo horario</div>
+
   <div class="selector-block">
     <button class="btn-total active" data-min="0" onclick="setWindow(0)">TOTAL</button>
     <div class="ultimos-label">Últimos</div>
@@ -190,46 +186,36 @@
     </div>
   </div>
 
-  <!-- TRANSACCIONES -->
-  <div class="section-label-big">Transacciones</div>
-  <div class="trans-block">
-    <div class="trans-value" id="val-svc-total">—</div>
-    <div class="trans-rate" id="rate-svc-total">—</div>
-  </div>
-
-  <!-- Barras -->
-  <div class="chart-card">
-    <div class="bars-wrap" id="bars-wrap"></div>
-    <div class="bar-rate-row" id="bar-rates"></div>
-    <div class="bar-label-row" id="bar-labels"></div>
-  </div>
-
-  <hr class="divider">
-
-  <!-- REGISTROS -->
-  <div class="section-label-big">Registros</div>
+  <!-- TRANSACCIONES DETALLES -->
+  <div class="section-label">Transacciones detalles</div>
   <div class="strip">
     <div class="strip-item">
-      <div class="strip-label">Totales</div>
-      <div class="strip-value" id="val-total">—</div>
-      <div class="strip-rate" id="rate-total">—</div>
+      <div class="strip-label">Providencia</div>
+      <div class="strip-value prov" id="tramo-prov">—</div>
+      <div class="strip-rate" id="rate-tramo-prov">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">Afiliados</div>
-      <div class="strip-value afiliado" id="val-si">—</div>
-      <div class="strip-rate" id="rate-si">—</div>
+      <div class="strip-label">Ñuñoa</div>
+      <div class="strip-value nunu" id="tramo-nunu">—</div>
+      <div class="strip-rate" id="rate-tramo-nunu">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">No afiliados</div>
-      <div class="strip-value noafiliado" id="val-no">—</div>
-      <div class="strip-rate" id="rate-no">—</div>
+      <div class="strip-label">Total</div>
+      <div class="strip-value" id="tramo-total">—</div>
+      <div class="strip-rate" id="rate-tramo-total">—</div>
     </div>
+  </div>
+
+  <!-- Gráfico barras dobles: Kits | Bicis | Mecánica × Providencia/Ñuñoa -->
+  <div class="chart-card">
+    <div class="bars-groups" id="bars-groups"></div>
+    <div id="bar-group-names" style="display:flex; width:100%;"></div>
   </div>
 
   <hr class="divider">
 
   <!-- AFILIADOS USAN SERVICIOS -->
-  <div class="section-label-big">Afiliados usan servicios</div>
+  <div class="section-label">Afiliados usan servicios</div>
   <div class="strip">
     <div class="strip-item">
       <div class="strip-label">1 Servicio</div>
@@ -255,119 +241,17 @@
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgndIP_bFGXJWbQgdvRlszrL4rqZzkeNuI7iXxkNiuW9HMSHA0oZIfIKo7Zu31HYnn7K_LbuHpkCTK/pub?gid=1084445575&single=true&output=csv";
 
-const SVCS = [
-  { key: "Préstamo de bicicleta",        label: "Bicis",    color: "#f97316" },
-  { key: "Kit saludable (Agua + Fruta)",  label: "Kits",     color: "#fde047" },
-  { key: "Reparaciones mecánicas",        label: "Mecánica", color: "#a78bfa" },
-];
+// Columna A: timestamp, Columna B: Punto (Providencia/Ñuñoa), Columna C: Servicios
+const SVC_ORDER = ["Kit saludable (Agua + Fruta)", "Préstamo de bicicleta", "Reparaciones mecánicas"];
+const SVC_LABELS = ["Kits", "Bicis", "Mecánica"];
+const SVC_COLORS_PROV = ["#34d399", "#60a5fa", "#a78bfa"];
+const SVC_COLORS_NUNU = ["#059669", "#2563eb", "#7c3aed"];
 
 let records = [];
 let currentWindow = 0;
-let selectedDate = null; // null = hoy
+let selectedDate = null;
 
-function dateKey(d) {
-  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
-}
-
-function saveStateToURL() {
-  const params = new URLSearchParams(window.location.search);
-  params.set("fecha", selectedDate || "");
-  params.set("ventana", String(currentWindow));
-  const newUrl = window.location.pathname + "?" + params.toString();
-  window.history.replaceState(null, "", newUrl);
-}
-
-function loadStateFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  const fecha = params.get("fecha");
-  const ventana = params.get("ventana");
-  return {
-    fecha: fecha || null,
-    ventana: ventana !== null ? parseInt(ventana, 10) : null
-  };
-}
-
-const DOW_NAMES = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
-const MONTH_NAMES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-
-let calViewYear, calViewMonth;
-
-function formatDateLong(dateStr) {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  const dt = new Date(y, m - 1, d);
-  return DOW_NAMES[dt.getDay()] + " " + d + " " + MONTH_NAMES[m - 1] + " " + y;
-}
-
-function updateDateBtnLabel() {
-  const btn = document.getElementById("date-btn");
-  btn.textContent = selectedDate ? formatDateLong(selectedDate) : "Seleccionar fecha";
-}
-
-function toggleCalendar() {
-  const popup = document.getElementById("cal-popup");
-  const willOpen = !popup.classList.contains("open");
-  popup.classList.toggle("open", willOpen);
-  if (willOpen) {
-    if (selectedDate) {
-      const [y, m] = selectedDate.split("-").map(Number);
-      calViewYear = y; calViewMonth = m - 1;
-    } else {
-      const now = new Date();
-      calViewYear = now.getFullYear(); calViewMonth = now.getMonth();
-    }
-    renderCalendar();
-  }
-}
-
-function calShiftMonth(delta) {
-  calViewMonth += delta;
-  if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
-  if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
-  renderCalendar();
-}
-
-function calPickDay(d) {
-  selectedDate = calViewYear + "-" + String(calViewMonth+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
-  updateDateBtnLabel();
-  document.getElementById("cal-popup").classList.remove("open");
-  saveStateToURL();
-  render();
-}
-
-function renderCalendar() {
-  document.getElementById("cal-month-label").textContent = MONTH_NAMES[calViewMonth] + " " + calViewYear;
-  const grid = document.getElementById("cal-grid");
-  grid.innerHTML = "";
-  ["D","L","M","M","J","V","S"].forEach(d => {
-    const el = document.createElement("div");
-    el.className = "cal-dow";
-    el.textContent = d;
-    grid.appendChild(el);
-  });
-  const firstDow = new Date(calViewYear, calViewMonth, 1).getDay();
-  const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
-  for (let i = 0; i < firstDow; i++) {
-    const el = document.createElement("div");
-    el.className = "cal-day empty";
-    grid.appendChild(el);
-  }
-  for (let d = 1; d <= daysInMonth; d++) {
-    const el = document.createElement("div");
-    el.className = "cal-day";
-    const key = calViewYear + "-" + String(calViewMonth+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
-    if (key === selectedDate) el.classList.add("selected");
-    el.textContent = d;
-    el.onclick = () => calPickDay(d);
-    grid.appendChild(el);
-  }
-}
-
-document.addEventListener("click", function(e) {
-  const block = document.querySelector(".date-block");
-  if (block && !block.contains(e.target)) {
-    document.getElementById("cal-popup").classList.remove("open");
-  }
-});
+// ── Parsing ──────────────────────────────────────────────────────────────────
 
 function parseTS(str) {
   if (!str) return null;
@@ -399,24 +283,21 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     fields.push(cur);
-    const ts = (fields[0] || "").replace(/^"|"$/g, "");
-    const pertenece = (fields[2] || "").replace(/^"|"$/g, "").trim();
-    const servicios = (fields[3] || "").replace(/^"|"$/g, "").trim();
+    // Col A: timestamp, Col B: punto, Col C: servicios
+    const ts       = (fields[0] || "").replace(/^"|"$/g, "");
+    const punto    = (fields[1] || "").replace(/^"|"$/g, "").trim();
+    const servicios= (fields[2] || "").replace(/^"|"$/g, "").trim();
     const date = parseTS(ts);
-    if (date) result.push({ pertenece, servicios, date });
+    if (date && punto) result.push({ punto, servicios, date });
   }
   return result;
 }
 
-// Formatea una tasa (count/mins) como "1 cada N segundos"
-function fmtRate(count, mins) {
-  if (count <= 0 || mins <= 0) return "—";
-  const perMin = count / mins;
-  if (perMin <= 0) return "—";
-  const seconds = 60 / perMin;
-  const rounded = seconds >= 10 ? Math.round(seconds) : Math.round(seconds * 10) / 10;
-  const secStr = Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(".", ",");
-  return "1 cada " + secStr + " seg";
+// ── Fetch robusto ─────────────────────────────────────────────────────────────
+
+function latestTimestamp(arr) {
+  if (!arr.length) return new Date(0);
+  return arr.reduce((max, r) => r.date > max ? r.date : max, new Date(0));
 }
 
 async function fetchOnce() {
@@ -430,43 +311,17 @@ async function fetchOnce() {
   return parseCSV(trimmed);
 }
 
-function latestTimestamp(arr) {
-  if (!arr.length) return new Date(0);
-  return arr.reduce((max, r) => r.date > max ? r.date : max, new Date(0));
-}
-
 async function fetchData() {
-  let parsed = null;
-  let lastErr = null;
-
-  // Hasta 3 intentos ante fallas de red o respuestas truncadas.
+  let parsed = null, lastErr = null;
   for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      parsed = await fetchOnce();
-      break;
-    } catch (e) {
-      lastErr = e;
-      await new Promise(r => setTimeout(r, 400));
-    }
+    try { parsed = await fetchOnce(); break; }
+    catch(e) { lastErr = e; await new Promise(r => setTimeout(r, 400)); }
   }
-
   if (parsed) {
-    // REGLA CLAVE: Google Sheets publica vía varios servidores/CDN que no siempre
-    // están sincronizados entre sí — a veces uno responde con datos más nuevos y el
-    // siguiente request, aunque posterior en el tiempo, puede caer en un servidor con
-    // una copia más vieja (misma cantidad de filas, pero desactualizada). Por eso
-    // comparamos por el TIMESTAMP MÁS RECIENTE real del contenido, no por el conteo
-    // de filas: solo reemplazamos los datos en pantalla si la nueva respuesta trae
-    // un registro tan nuevo o más nuevo que el que ya teníamos confirmado.
     const newLatest = latestTimestamp(parsed);
     const curLatest = latestTimestamp(records);
-    if (newLatest >= curLatest && parsed.length >= records.length) {
-      records = parsed;
-    } else if (newLatest > curLatest) {
-      // Más reciente pero con menos filas (caso raro/edge): igual lo aceptamos,
-      // porque "más reciente" pesa más que "más filas" para reflejar la realidad actual.
-      records = parsed;
-    }
+    if (newLatest >= curLatest && parsed.length >= records.length) records = parsed;
+    else if (newLatest > curLatest) records = parsed;
     document.getElementById("error-msg").style.display = "none";
   } else if (lastErr && records.length === 0) {
     const el = document.getElementById("error-msg");
@@ -476,158 +331,276 @@ async function fetchData() {
   render();
 }
 
-function setWindow(mins) {
-  currentWindow = mins;
-  document.querySelectorAll(".btn-total, .tab").forEach(b => {
-    b.classList.toggle("active", +b.dataset.min === mins);
-  });
-  saveStateToURL();
-  render();
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function dateKey(d) {
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+
+function fmtRate(count, mins) {
+  if (count <= 0 || mins <= 0) return "—";
+  const perMin = count / mins;
+  const seconds = Math.round(60 / perMin);
+  return "1 cada " + seconds + " seg";
+}
+
+function fmtDec(v) {
+  return v.toFixed(1).replace(".", ",");
 }
 
 function getMins() {
   const now = new Date();
   if (currentWindow > 0) return currentWindow;
-  // TOTAL: desde las 9:00 AM del día seleccionado (o de hoy si no se eligió fecha)
   let base = now;
   if (selectedDate) {
     const [y, m, d] = selectedDate.split("-").map(Number);
     base = new Date(y, m - 1, d);
   }
   const start9 = new Date(base.getFullYear(), base.getMonth(), base.getDate(), 9, 0, 0);
-  const end = selectedDate && dateKey(base) !== dateKey(now) ? new Date(base.getFullYear(), base.getMonth(), base.getDate(), 23, 59, 59) : now;
+  const isToday = dateKey(base) === dateKey(now);
+  const end = isToday ? now : new Date(base.getFullYear(), base.getMonth(), base.getDate(), 23, 59, 59);
   return Math.max(1, Math.round((end - start9) / 60000));
 }
 
+function countSvcs(subset) {
+  let n = 0;
+  subset.forEach(r => {
+    if (r.servicios) n += r.servicios.split(" | ").filter(x => x.trim()).length;
+  });
+  return n;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+
 function render() {
   const now = new Date();
+
+  // ── Filtrar por fecha seleccionada ──
+  const daySet = selectedDate
+    ? records.filter(r => dateKey(r.date) === selectedDate)
+    : records;
+
+  // ── RESUMEN TOTALES (día completo) ──
+  const dayProv = daySet.filter(r => r.punto === "Providencia");
+  const dayNunu = daySet.filter(r => r.punto === "Ñuñoa");
+  const resProv  = countSvcs(dayProv);
+  const resNunu  = countSvcs(dayNunu);
+  const resTotal = resProv + resNunu;
+  const afiCount = daySet.length;
+  const afiRatio = afiCount > 0 ? fmtDec(resTotal / afiCount) : "—";
+
+  document.getElementById("res-prov").textContent  = resProv;
+  document.getElementById("res-nunu").textContent  = resNunu;
+  document.getElementById("res-total").textContent = resTotal;
+  document.getElementById("afi-count").textContent = afiCount;
+  document.getElementById("afi-ratio").textContent = afiRatio;
+
+  // ── Filtrar por tramo horario ──
   const isTotal = currentWindow === 0;
-
-  // Filtrar primero por la fecha seleccionada (si hay alguna elegida)
-  let dayFiltered = records;
-  if (selectedDate) {
-    dayFiltered = records.filter(r => dateKey(r.date) === selectedDate);
-  }
-
-  // Para RESUMEN: totales del día completo seleccionado (o de todos los registros si no hay fecha elegida)
-  const resumenSet = selectedDate ? dayFiltered : records;
-  let resumenTrans = 0;
-  resumenSet.forEach(r => {
-    if (r.servicios) resumenTrans += r.servicios.split(" | ").filter(x => x.trim()).length;
-  });
-  const resumenAfi = resumenSet.filter(r => r.pertenece === "Sí pertenece").length;
-  document.getElementById("val-resumen-trans").textContent = resumenTrans;
-  document.getElementById("val-resumen-afi").textContent = resumenAfi;
-
-  const cutoff = isTotal ? new Date(0) : new Date(now.getTime() - currentWindow * 60000);
-  const subset = isTotal ? dayFiltered : dayFiltered.filter(r => r.date >= cutoff);
+  const cutoff  = isTotal ? new Date(0) : new Date(now.getTime() - currentWindow * 60000);
+  const tramoSet = isTotal ? daySet : daySet.filter(r => r.date >= cutoff);
   const mins = getMins();
 
-  const total = subset.length;
-  const si = subset.filter(r => r.pertenece === "Sí pertenece").length;
-  const no = subset.filter(r => r.pertenece === "No pertenece").length;
+  const tramoProv  = tramoSet.filter(r => r.punto === "Providencia");
+  const tramoNunu  = tramoSet.filter(r => r.punto === "Ñuñoa");
+  const tProvSvcs  = countSvcs(tramoProv);
+  const tNunuSvcs  = countSvcs(tramoNunu);
+  const tTotalSvcs = tProvSvcs + tNunuSvcs;
 
-  const svcCounts = {};
-  SVCS.forEach(s => svcCounts[s.key] = 0);
-  let totalSvc = 0;
-  subset.forEach(r => {
-    if (r.servicios) {
-      r.servicios.split(" | ").forEach(s => {
-        s = s.trim();
-        if (s in svcCounts) { svcCounts[s]++; totalSvc++; }
-      });
-    }
+  document.getElementById("tramo-prov").textContent       = tProvSvcs;
+  document.getElementById("rate-tramo-prov").textContent  = fmtRate(tProvSvcs, mins);
+  document.getElementById("tramo-nunu").textContent       = tNunuSvcs;
+  document.getElementById("rate-tramo-nunu").textContent  = fmtRate(tNunuSvcs, mins);
+  document.getElementById("tramo-total").textContent      = tTotalSvcs;
+  document.getElementById("rate-tramo-total").textContent = fmtRate(tTotalSvcs, mins);
+
+  // ── Barras dobles: Kits | Bicis | Mecánica × Providencia / Ñuñoa ──
+  const svcByPunto = {};
+  SVC_ORDER.forEach(s => { svcByPunto[s] = { prov: 0, nunu: 0 }; });
+  tramoSet.forEach(r => {
+    if (!r.servicios) return;
+    r.servicios.split(" | ").forEach(s => {
+      s = s.trim();
+      if (s in svcByPunto) {
+        if (r.punto === "Providencia") svcByPunto[s].prov++;
+        else if (r.punto === "Ñuñoa")  svcByPunto[s].nunu++;
+      }
+    });
   });
 
+  const allVals = SVC_ORDER.flatMap(s => [svcByPunto[s].prov, svcByPunto[s].nunu]);
+  const maxVal  = Math.max(...allVals, 1);
+  const BAR_H   = 150;
+
+  const groupsWrap = document.getElementById("bars-groups");
+  const namesWrap  = document.getElementById("bar-group-names");
+  groupsWrap.innerHTML = "";
+  namesWrap.innerHTML  = "";
+
+  SVC_ORDER.forEach((svc, i) => {
+    const pv = svcByPunto[svc].prov;
+    const nv = svcByPunto[svc].nunu;
+    const ph = Math.max(3, Math.round((pv / maxVal) * BAR_H));
+    const nh = Math.max(3, Math.round((nv / maxVal) * BAR_H));
+
+    const group = document.createElement("div");
+    group.className = "bar-group";
+    group.innerHTML = `
+      <div class="bars-pair" style="height:${BAR_H}px; align-items:flex-end;">
+        <div class="bar-single">
+          <div class="bar-val">${pv}</div>
+          <div class="bar-rect" style="height:${ph}px; background:${SVC_COLORS_PROV[i]};"></div>
+          <div class="bar-sub">Prov</div>
+        </div>
+        <div class="bar-single">
+          <div class="bar-val">${nv}</div>
+          <div class="bar-rect" style="height:${nh}px; background:${SVC_COLORS_NUNU[i]};"></div>
+          <div class="bar-sub">Ñuñoa</div>
+        </div>
+      </div>
+    `;
+    groupsWrap.appendChild(group);
+
+    const name = document.createElement("div");
+    name.className = "bar-group-name";
+    name.textContent = SVC_LABELS[i];
+    name.style.flex = "1";
+    name.style.textAlign = "center";
+    namesWrap.appendChild(name);
+  });
+
+  // ── Afiliados usan servicios (tramo) ──
   let s1 = 0, s2 = 0, s3 = 0;
-  subset.filter(r => r.pertenece === "Sí pertenece").forEach(r => {
+  tramoSet.forEach(r => {
     if (!r.servicios) return;
     const n = r.servicios.split(" | ").filter(x => x.trim()).length;
     if (n === 1) s1++;
     else if (n === 2) s2++;
     else if (n >= 3) s3++;
   });
-
-  // TRANSACCIONES
-  document.getElementById("val-svc-total").textContent = totalSvc;
-  document.getElementById("rate-svc-total").textContent = fmtRate(totalSvc, mins);
-
-  // REGISTROS
-  document.getElementById("val-total").textContent = total;
-  document.getElementById("rate-total").textContent = fmtRate(total, mins);
-  document.getElementById("val-si").textContent = si;
-  document.getElementById("rate-si").textContent = fmtRate(si, mins);
-  document.getElementById("val-no").textContent = no;
-  document.getElementById("rate-no").textContent = fmtRate(no, mins);
-
-  // AFILIADOS USAN SERVICIOS (sin tasa)
   document.getElementById("val-s1").textContent = s1;
   document.getElementById("val-s2").textContent = s2;
   document.getElementById("val-s3").textContent = s3;
-
-  // Barras
-  const counts = SVCS.map(s => svcCounts[s.key] || 0);
-  const maxVal = Math.max(...counts, 1);
-  const BAR_MAX_H = 160;
-
-  const wrap = document.getElementById("bars-wrap");
-  const ratesRow = document.getElementById("bar-rates");
-  const labelsRow = document.getElementById("bar-labels");
-  wrap.innerHTML = "";
-  ratesRow.innerHTML = "";
-  labelsRow.innerHTML = "";
-
-  SVCS.forEach((svc, i) => {
-    const c = counts[i];
-    const barH = Math.max(4, Math.round((c / maxVal) * BAR_MAX_H));
-
-    const col = document.createElement("div");
-    col.className = "bar-col";
-    col.innerHTML = `
-      <div class="bar-stack" style="height:${BAR_MAX_H}px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
-        <div class="bar-val" style="margin-bottom:5px;">${c}</div>
-        <div class="bar-inner" style="height:${barH}px;background:${svc.color};"></div>
-      </div>
-    `;
-    wrap.appendChild(col);
-
-    const rd = document.createElement("div");
-    rd.className = "bar-rate";
-    rd.textContent = fmtRate(c, mins);
-    ratesRow.appendChild(rd);
-
-    const lbl = document.createElement("div");
-    lbl.className = "bar-label";
-    lbl.textContent = svc.label;
-    labelsRow.appendChild(lbl);
-  });
 
   document.getElementById("last-updated").textContent =
     "Actualizado " + now.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 }
 
-fetchData();
-setInterval(fetchData, 30000);
+// ── Selectores ────────────────────────────────────────────────────────────────
 
-// Inicializar selector de fecha y ventana: primero intenta recuperar desde la URL
-// (para que sobrevivan a un refresco completo de la página), si no hay nada guardado
-// usa los valores por defecto (hoy y TOTAL).
-(function initState() {
-  const now = new Date();
-  const todayKey = dateKey(now);
-  const saved = loadStateFromURL();
+function setWindow(mins) {
+  currentWindow = mins;
+  document.querySelectorAll(".btn-total, .tab").forEach(b =>
+    b.classList.toggle("active", +b.dataset.min === mins));
+  saveStateToURL();
+  render();
+}
 
-  selectedDate = saved.fecha !== null ? saved.fecha : todayKey;
-  currentWindow = saved.ventana !== null && !isNaN(saved.ventana) ? saved.ventana : 0;
+// ── Persistencia en URL ───────────────────────────────────────────────────────
 
+function saveStateToURL() {
+  const params = new URLSearchParams(window.location.search);
+  params.set("fecha", selectedDate || "");
+  params.set("ventana", String(currentWindow));
+  window.history.replaceState(null, "", window.location.pathname + "?" + params.toString());
+}
+
+function loadStateFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return { fecha: params.get("fecha") || null, ventana: params.get("ventana") };
+}
+
+// ── Calendario custom ─────────────────────────────────────────────────────────
+
+const DOW_NAMES   = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const MONTH_NAMES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+let calViewYear, calViewMonth;
+
+function formatDateLong(dateStr) {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return DOW_NAMES[dt.getDay()] + " " + d + " " + MONTH_NAMES[m-1] + " " + y;
+}
+
+function updateDateBtnLabel() {
+  document.getElementById("date-btn").textContent =
+    selectedDate ? formatDateLong(selectedDate) : "Seleccionar fecha";
+}
+
+function toggleCalendar() {
+  const popup = document.getElementById("cal-popup");
+  const opening = !popup.classList.contains("open");
+  popup.classList.toggle("open", opening);
+  if (opening) {
+    const ref = selectedDate || dateKey(new Date());
+    const [y, m] = ref.split("-").map(Number);
+    calViewYear = y; calViewMonth = m - 1;
+    renderCalendar();
+  }
+}
+
+function calShiftMonth(delta) {
+  calViewMonth += delta;
+  if (calViewMonth < 0)  { calViewMonth = 11; calViewYear--; }
+  if (calViewMonth > 11) { calViewMonth = 0;  calViewYear++; }
+  renderCalendar();
+}
+
+function calPickDay(d) {
+  selectedDate = calViewYear + "-" + String(calViewMonth+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
   updateDateBtnLabel();
+  document.getElementById("cal-popup").classList.remove("open");
+  saveStateToURL();
+  render();
+}
 
-  document.querySelectorAll(".btn-total, .tab").forEach(b => {
-    b.classList.toggle("active", +b.dataset.min === currentWindow);
+function renderCalendar() {
+  document.getElementById("cal-month-label").textContent = MONTH_NAMES[calViewMonth] + " " + calViewYear;
+  const grid = document.getElementById("cal-grid");
+  grid.innerHTML = "";
+  ["D","L","M","M","J","V","S"].forEach(d => {
+    const el = document.createElement("div");
+    el.className = "cal-dow"; el.textContent = d;
+    grid.appendChild(el);
   });
+  const firstDow    = new Date(calViewYear, calViewMonth, 1).getDay();
+  const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
+  for (let i = 0; i < firstDow; i++) {
+    const el = document.createElement("div"); el.className = "cal-day empty";
+    grid.appendChild(el);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el  = document.createElement("div");
+    el.className = "cal-day";
+    const key = calViewYear + "-" + String(calViewMonth+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
+    if (key === selectedDate) el.classList.add("selected");
+    el.textContent = d;
+    el.onclick = () => calPickDay(d);
+    grid.appendChild(el);
+  }
+}
 
+document.addEventListener("click", e => {
+  const block = document.querySelector(".date-block");
+  if (block && !block.contains(e.target))
+    document.getElementById("cal-popup").classList.remove("open");
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+(function init() {
+  const now    = new Date();
+  const saved  = loadStateFromURL();
+  selectedDate  = saved.fecha  || dateKey(now);
+  currentWindow = saved.ventana !== null && !isNaN(+saved.ventana) ? +saved.ventana : 0;
+  updateDateBtnLabel();
+  document.querySelectorAll(".btn-total, .tab").forEach(b =>
+    b.classList.toggle("active", +b.dataset.min === currentWindow));
   saveStateToURL();
 })();
+
+fetchData();
+setInterval(fetchData, 30000);
 </script>
 </body>
 </html>
