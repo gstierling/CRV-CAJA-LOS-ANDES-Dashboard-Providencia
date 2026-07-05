@@ -74,12 +74,13 @@
   .tab:hover { background: rgba(0,0,0,0.35); }
   .tab.active { background: var(--orange); border-color: var(--orange); }
   .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 16px 0; margin-bottom: 14px; }
-  .bars-groups { display: flex; justify-content: space-around; align-items: flex-end; height: 180px; gap: 8px; padding: 0 4px; }
-  .bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+  .bars-groups { display: flex; justify-content: space-around; align-items: flex-end; height: 180px; gap: 0; padding: 0 8px; }
+  .bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; padding: 0 6px; border-right: 1px solid rgba(255,255,255,0.12); }
+  .bar-group:last-child { border-right: none; }
   .bar-group-names { display: flex; width: 100%; border-top: 1px solid var(--border); }
   .bar-group-name { flex: 1; text-align: center; font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.85); padding: 10px 4px 12px; }
-  .bars-pair { display: flex; align-items: flex-end; gap: 5px; width: 100%; justify-content: center; }
-  .bar-single { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; }
+  .bars-pair { display: flex; align-items: flex-end; gap: 4px; width: 100%; justify-content: center; }
+  .bar-single { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; max-width: 44px; }
   .bar-val { font-size: 0.95rem; font-weight: 900; color: var(--white); margin-bottom: 4px; }
   .bar-rect { width: 100%; border-radius: 6px 6px 0 0; min-height: 3px; }
   .bar-sub { font-size: 0.65rem; font-weight: 700; color: var(--muted); text-align: center; margin-top: 4px; }
@@ -139,7 +140,7 @@
       <div class="strip-rate" id="rate-afi-count">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">Servicios por afiliado</div>
+      <div class="strip-label">Servicios x afiliado</div>
       <div class="strip-value xl" id="afi-ratio">—</div>
     </div>
   </div>
@@ -303,8 +304,20 @@ function dateKey(d){
 
 // Tasa como "N x min." — count/mins con 1 decimal y coma
 function fmtRate(count, mins){
-  if(!mins) return "—";
-  return (count/mins).toFixed(1).replace(".",",")+" x min.";
+  if(!mins || !count) return "—";
+  const segsTotal = (mins * 60) / count; // segundos entre cada evento
+  if(segsTotal < 60){
+    const s = segsTotal < 10
+      ? segsTotal.toFixed(1).replace(".",",")
+      : String(Math.round(segsTotal));
+    return "1 cada " + s + " segs.";
+  } else {
+    const m = segsTotal / 60;
+    const mStr = m < 10
+      ? m.toFixed(1).replace(".",",")
+      : String(Math.round(m));
+    return "1 cada " + mStr + " mins.";
+  }
 }
 
 // Para las tasas de TOTALES: minutos desde el primer registro del día hasta ahora (o fin del día si es pasado)
