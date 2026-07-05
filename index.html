@@ -16,9 +16,6 @@
     --muted: rgba(255,255,255,0.6);
     --prov-color: #f97316;
     --nunu-color: #fde047;
-    --kit-color: #34d399;
-    --bici-color: #60a5fa;
-    --mec-color:  #a78bfa;
   }
   body {
     background: linear-gradient(160deg, #0097a7 0%, #006978 100%);
@@ -28,8 +25,6 @@
     padding: 2rem 1.5rem 3rem;
   }
   .container { max-width: 960px; margin: 0 auto; }
-
-  /* Header */
   .header { margin-bottom: 2rem; text-align: center; }
   .header-top { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 2px; }
   .live-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--orange); flex-shrink: 0; animation: pulse 1.8s infinite; }
@@ -37,49 +32,37 @@
   .title { font-size: 2.2rem; font-weight: 900; color: var(--white); letter-spacing: 0.04em; }
   .title-sub { font-size: 1.3rem; font-weight: 700; color: rgba(255,255,255,0.7); }
   .last-updated { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
-
-  /* Error */
   .error-msg { background: rgba(150,20,20,0.4); border: 1px solid rgba(255,100,100,0.4); border-radius: 10px; padding: 14px 18px; color: #ffaaaa; font-size: 1rem; margin-bottom: 1.5rem; display: none; }
-
-  /* Section label */
   .section-label { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
-
-  /* Franja horizontal genérica */
   .strip { display: flex; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 14px; }
   .strip-item { flex: 1; padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
   .strip-item:last-child { border-right: none; }
   .strip-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
   .strip-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
   .strip-rate  { font-size: 0.82rem; color: var(--muted); margin-top: 5px; font-weight: 600; }
-  .strip-value.xl { font-size: 4rem; }
+  .strip-value.xl { font-size: 3.5rem; }
   .strip-value.prov { color: var(--prov-color); }
   .strip-value.nunu { color: var(--nunu-color); }
-
-  /* Divider */
+  .strip-value.s1 { color: #fde047; }
+  .strip-value.s2 { color: #a78bfa; }
+  .strip-value.s3 { color: #34d399; }
   .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-
-  /* Selector de fecha */
   .date-block { display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; gap: 8px; position: relative; }
   .date-label { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
   .date-btn { background: var(--surface); border: 2px solid var(--border); border-radius: 14px; color: var(--white); font-family: 'Nunito', sans-serif; font-size: 1.3rem; font-weight: 800; padding: 10px 28px; cursor: pointer; text-align: center; width: 100%; max-width: 420px; }
   .date-btn:hover { border-color: var(--orange); }
-
-  /* Calendario popup */
   .cal-popup { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #00565f; border: 2px solid var(--border); border-radius: 14px; padding: 14px; z-index: 50; width: 280px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
   .cal-popup.open { display: block; }
   .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .cal-nav button { background: transparent; border: none; color: var(--white); font-size: 1.2rem; font-weight: 900; cursor: pointer; padding: 4px 10px; border-radius: 8px; }
   .cal-nav button:hover { background: rgba(255,255,255,0.12); }
   .cal-month-label { font-size: 1rem; font-weight: 800; text-transform: capitalize; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
   .cal-dow { font-size: 0.7rem; font-weight: 800; color: var(--muted); text-align: center; padding: 4px 0; }
   .cal-day { font-size: 0.85rem; font-weight: 700; text-align: center; padding: 8px 0; border-radius: 8px; cursor: pointer; color: var(--white); }
   .cal-day:hover { background: rgba(255,255,255,0.15); }
-  .cal-day.empty { cursor: default; }
-  .cal-day.empty:hover { background: transparent; }
+  .cal-day.empty { cursor: default; } .cal-day.empty:hover { background: transparent; }
   .cal-day.selected { background: var(--orange); }
-
-  /* Botones selector tramo */
   .selector-block { margin-bottom: 1rem; }
   .btn-total { display: block; width: 100%; padding: 18px; background: var(--surface); border: 2px solid var(--border); border-radius: 14px; color: var(--white); font-family: 'Nunito', sans-serif; font-size: 1.6rem; font-weight: 900; letter-spacing: 0.1em; cursor: pointer; margin-bottom: 1.2rem; transition: all 0.15s; }
   .btn-total:hover { background: rgba(0,0,0,0.35); }
@@ -89,24 +72,16 @@
   .tab { flex: 1; padding: 13px 10px; border-radius: 12px; border: 2px solid var(--border); font-size: 1rem; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; background: var(--surface); color: var(--white); transition: all 0.15s; text-align: center; }
   .tab:hover { background: rgba(0,0,0,0.35); }
   .tab.active { background: var(--orange); border-color: var(--orange); }
-
-  /* Barras dobles por servicio */
   .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 16px 0; margin-bottom: 14px; }
   .bars-groups { display: flex; justify-content: space-around; align-items: flex-end; height: 180px; gap: 8px; padding: 0 4px; }
   .bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
-  .bar-group-name { font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.85); text-align: center; padding: 10px 4px 12px; border-top: 1px solid var(--border); width: 100%; }
+  .bar-group-names { display: flex; width: 100%; border-top: 1px solid var(--border); }
+  .bar-group-name { flex: 1; text-align: center; font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.85); padding: 10px 4px 12px; }
   .bars-pair { display: flex; align-items: flex-end; gap: 5px; width: 100%; justify-content: center; }
   .bar-single { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; }
   .bar-val { font-size: 0.95rem; font-weight: 900; color: var(--white); margin-bottom: 4px; }
   .bar-rect { width: 100%; border-radius: 6px 6px 0 0; min-height: 3px; }
   .bar-sub { font-size: 0.65rem; font-weight: 700; color: var(--muted); text-align: center; margin-top: 4px; }
-
-  /* AFILIADOS USAN SERVICIOS */
-  .strip-value.s1 { color: #fde047; }
-  .strip-value.s2 { color: #a78bfa; }
-  .strip-value.s3 { color: #34d399; }
-
-  /* BBDD */
   .bbdd-wrap { margin-top: 2.5rem; text-align: center; }
   .bbdd-btn { display: inline-block; padding: 12px 36px; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; color: #b2ebf2; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; letter-spacing: 0.1em; text-decoration: none; transition: all 0.15s; }
   .bbdd-btn:hover { background: rgba(0,0,0,0.35); border-color: #b2ebf2; }
@@ -115,19 +90,14 @@
 <body>
 <div class="container">
 
-  <!-- Header -->
   <div class="header">
-    <div class="header-top">
-      <span class="live-dot"></span>
-      <span class="title">CAJA LOS ANDES</span>
-    </div>
+    <div class="header-top"><span class="live-dot"></span><span class="title">CAJA LOS ANDES</span></div>
     <div class="title-sub">Providencia · Ñuñoa</div>
     <div class="last-updated" id="last-updated">Cargando…</div>
   </div>
 
   <div id="error-msg" class="error-msg"></div>
 
-  <!-- Selector de fecha -->
   <div class="date-block">
     <div class="date-label">Seleccionar fecha</div>
     <button type="button" id="date-btn" class="date-btn" onclick="toggleCalendar()">Cargando…</button>
@@ -141,29 +111,31 @@
     </div>
   </div>
 
-  <!-- TRANSACCIONES TOTALES RESUMEN -->
-  <div class="section-label">Transacciones totales resumen</div>
+  <div class="section-label">Transacciones totales</div>
   <div class="strip">
     <div class="strip-item">
       <div class="strip-label">Providencia</div>
       <div class="strip-value prov xl" id="res-prov">—</div>
+      <div class="strip-rate" id="rate-res-prov">—</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">Ñuñoa</div>
       <div class="strip-value nunu xl" id="res-nunu">—</div>
+      <div class="strip-rate" id="rate-res-nunu">—</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">Total</div>
       <div class="strip-value xl" id="res-total">—</div>
+      <div class="strip-rate" id="rate-res-total">—</div>
     </div>
   </div>
 
-  <!-- AFILIADOS ATENDIDOS -->
   <div class="section-label">Afiliados atendidos</div>
   <div class="strip">
     <div class="strip-item">
       <div class="strip-label">Afiliados atendidos</div>
       <div class="strip-value xl" id="afi-count">—</div>
+      <div class="strip-rate" id="rate-afi-count">—</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">Servicios por afiliado</div>
@@ -173,9 +145,7 @@
 
   <hr class="divider">
 
-  <!-- RESULTADOS POR TRAMO HORARIO -->
-  <div class="section-label">Resultados por tramo horario</div>
-
+  <div class="section-label">Resultados x horario</div>
   <div class="selector-block">
     <button class="btn-total active" data-min="0" onclick="setWindow(0)">TOTAL</button>
     <div class="ultimos-label">Últimos</div>
@@ -186,7 +156,6 @@
     </div>
   </div>
 
-  <!-- TRANSACCIONES DETALLES -->
   <div class="section-label">Transacciones detalles</div>
   <div class="strip">
     <div class="strip-item">
@@ -206,15 +175,13 @@
     </div>
   </div>
 
-  <!-- Gráfico barras dobles: Kits | Bicis | Mecánica × Providencia/Ñuñoa -->
   <div class="chart-card">
     <div class="bars-groups" id="bars-groups"></div>
-    <div id="bar-group-names" style="display:flex; width:100%;"></div>
+    <div class="bar-group-names" id="bar-group-names"></div>
   </div>
 
   <hr class="divider">
 
-  <!-- AFILIADOS USAN SERVICIOS -->
   <div class="section-label">Afiliados usan servicios</div>
   <div class="strip">
     <div class="strip-item">
@@ -231,25 +198,23 @@
     </div>
   </div>
 
-  <!-- BBDD -->
   <div class="bbdd-wrap">
     <a class="bbdd-btn" href="https://docs.google.com/spreadsheets/d/1J48WDExtFgjx22Zf9rjTR8IdhAmffc_Dzpw086Cimeo/edit" target="_blank">BBDD</a>
   </div>
 
 </div>
-
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgndIP_bFGXJWbQgdvRlszrL4rqZzkeNuI7iXxkNiuW9HMSHA0oZIfIKo7Zu31HYnn7K_LbuHpkCTK/pub?gid=1084445575&single=true&output=csv";
 
-// Columna A: timestamp, Columna B: Punto (Providencia/Ñuñoa), Columna C: Servicios
-const SVC_ORDER = ["Kit saludable (Agua + Fruta)", "Préstamo de bicicleta", "Reparaciones mecánicas"];
+// Nombres EXACTOS tal como aparecen en el CSV (columna C)
+const SVC_ORDER  = ["Kit Agua-Fruta", "Bicicleta", "Mecánica"];
 const SVC_LABELS = ["Kits", "Bicis", "Mecánica"];
 const SVC_COLORS_PROV = ["#34d399", "#60a5fa", "#a78bfa"];
 const SVC_COLORS_NUNU = ["#059669", "#2563eb", "#7c3aed"];
 
 let records = [];
 let currentWindow = 0;
-let selectedDate = null;
+let selectedDate  = null;
 
 // ── Parsing ──────────────────────────────────────────────────────────────────
 
@@ -257,15 +222,15 @@ function parseTS(str) {
   if (!str) return null;
   try {
     const isPM = /p\.\s*m\./.test(str);
-    const clean = str.replace(/[ap]\.\s*m\./g, "").trim();
+    const clean = str.replace(/[ap]\.\s*m\./g,"").trim();
     const [datePart, timePart] = clean.split(", ");
     if (!datePart || !timePart) return null;
-    const [d, m, y] = datePart.split("-").map(Number);
-    let [h, min, s] = timePart.trim().split(":").map(Number);
-    if (isPM && h !== 12) h += 12;
-    if (!isPM && h === 12) h = 0;
-    return new Date(y, m - 1, d, h, min, s || 0);
-  } catch(e) { return null; }
+    const [d,m,y] = datePart.split("-").map(Number);
+    let [h,min,s] = timePart.trim().split(":").map(Number);
+    if (isPM && h!==12) h+=12;
+    if (!isPM && h===12) h=0;
+    return new Date(y, m-1, d, h, min, s||0);
+  } catch(e){ return null; }
 }
 
 function parseCSV(text) {
@@ -275,18 +240,18 @@ function parseCSV(text) {
     const line = lines[i].trim();
     if (!line) continue;
     const fields = [];
-    let cur = "", inQ = false;
-    for (let c = 0; c < line.length; c++) {
-      const ch = line[c];
-      if (ch === '"') { inQ = !inQ; }
-      else if (ch === ',' && !inQ) { fields.push(cur); cur = ""; }
-      else { cur += ch; }
+    let cur="", inQ=false;
+    for (let c=0; c<line.length; c++){
+      const ch=line[c];
+      if (ch==='"'){ inQ=!inQ; }
+      else if (ch===',' && !inQ){ fields.push(cur); cur=""; }
+      else { cur+=ch; }
     }
     fields.push(cur);
-    // Col A: timestamp, Col B: punto, Col C: servicios
-    const ts       = (fields[0] || "").replace(/^"|"$/g, "");
-    const punto    = (fields[1] || "").replace(/^"|"$/g, "").trim();
-    const servicios= (fields[2] || "").replace(/^"|"$/g, "").trim();
+    // Col 0=Timestamp, Col 1=Punto, Col 2=Servicios
+    const ts        = (fields[0]||"").replace(/^"|"$/g,"");
+    const punto     = (fields[1]||"").replace(/^"|"$/g,"").trim();
+    const servicios = (fields[2]||"").replace(/^"|"$/g,"").trim();
     const date = parseTS(ts);
     if (date && punto) result.push({ punto, servicios, date });
   }
@@ -295,312 +260,273 @@ function parseCSV(text) {
 
 // ── Fetch robusto ─────────────────────────────────────────────────────────────
 
-function latestTimestamp(arr) {
-  if (!arr.length) return new Date(0);
-  return arr.reduce((max, r) => r.date > max ? r.date : max, new Date(0));
-}
+function latestTS(arr){ return arr.length ? arr.reduce((mx,r)=>r.date>mx?r.date:mx,new Date(0)) : new Date(0); }
 
-async function fetchOnce() {
-  const res = await fetch(CSV_URL + "&cb=" + Date.now(), { cache: "no-store" });
-  if (!res.ok) throw new Error("HTTP " + res.status);
+async function fetchOnce(){
+  const res = await fetch(CSV_URL+"&cb="+Date.now(),{cache:"no-store"});
+  if(!res.ok) throw new Error("HTTP "+res.status);
   const text = await res.text();
   const trimmed = text.trim();
-  if (!trimmed) throw new Error("Respuesta vacía");
-  const quoteCount = (trimmed.match(/"/g) || []).length;
-  if (quoteCount % 2 !== 0) throw new Error("CSV truncado");
+  if(!trimmed) throw new Error("Respuesta vacía");
+  if((trimmed.match(/"/g)||[]).length%2!==0) throw new Error("CSV truncado");
   return parseCSV(trimmed);
 }
 
-async function fetchData() {
-  let parsed = null, lastErr = null;
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try { parsed = await fetchOnce(); break; }
-    catch(e) { lastErr = e; await new Promise(r => setTimeout(r, 400)); }
+async function fetchData(){
+  let parsed=null, lastErr=null;
+  for(let i=0;i<3;i++){
+    try{ parsed=await fetchOnce(); break; }
+    catch(e){ lastErr=e; await new Promise(r=>setTimeout(r,400)); }
   }
-  if (parsed) {
-    const newLatest = latestTimestamp(parsed);
-    const curLatest = latestTimestamp(records);
-    if (newLatest >= curLatest && parsed.length >= records.length) records = parsed;
-    else if (newLatest > curLatest) records = parsed;
-    document.getElementById("error-msg").style.display = "none";
-  } else if (lastErr && records.length === 0) {
-    const el = document.getElementById("error-msg");
-    el.style.display = "block";
-    el.textContent = "No se pudo cargar la planilla: " + lastErr.message;
+  if(parsed){
+    const newLast=latestTS(parsed), curLast=latestTS(records);
+    if(newLast>=curLast && parsed.length>=records.length) records=parsed;
+    else if(newLast>curLast) records=parsed;
+    document.getElementById("error-msg").style.display="none";
+  } else if(lastErr && records.length===0){
+    const el=document.getElementById("error-msg");
+    el.style.display="block";
+    el.textContent="No se pudo cargar: "+lastErr.message;
   }
   render();
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function dateKey(d) {
-  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+function dateKey(d){
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
 
-function fmtRate(count, mins) {
-  if (count <= 0 || mins <= 0) return "—";
-  const perMin = count / mins;
-  const seconds = Math.round(60 / perMin);
-  return "1 cada " + seconds + " seg";
+// Tasa como "N x min." — count/mins con 1 decimal y coma
+function fmtRate(count, mins){
+  if(!count||!mins) return "—";
+  return (count/mins).toFixed(1).replace(".",","+" x min.");
 }
 
-function fmtDec(v) {
-  return v.toFixed(1).replace(".", ",");
-}
-
-function getMins() {
+// Para las tasas de TOTALES: minutos desde el primer registro del día hasta ahora (o fin del día si es pasado)
+function getMinsDay(daySet){
+  if(!daySet.length) return 1;
   const now = new Date();
-  if (currentWindow > 0) return currentWindow;
-  let base = now;
-  if (selectedDate) {
-    const [y, m, d] = selectedDate.split("-").map(Number);
-    base = new Date(y, m - 1, d);
-  }
-  const start9 = new Date(base.getFullYear(), base.getMonth(), base.getDate(), 9, 0, 0);
-  const isToday = dateKey(base) === dateKey(now);
-  const end = isToday ? now : new Date(base.getFullYear(), base.getMonth(), base.getDate(), 23, 59, 59);
-  return Math.max(1, Math.round((end - start9) / 60000));
+  const oldest = daySet.reduce((mn,r)=>r.date<mn?r.date:mn, daySet[0].date);
+  const isToday = dateKey(oldest)===dateKey(now);
+  const end = isToday ? now : new Date(oldest.getFullYear(),oldest.getMonth(),oldest.getDate(),23,59,59);
+  return Math.max(1, Math.round((end-oldest)/60000));
 }
 
-function countSvcs(subset) {
-  let n = 0;
-  subset.forEach(r => {
-    if (r.servicios) n += r.servicios.split(" | ").filter(x => x.trim()).length;
-  });
+// Para las tasas de TRAMO: simplemente el tramo en minutos (15/30/60), o desde primer registro si TOTAL
+function getMinsTramo(tramoSet){
+  if(currentWindow>0) return currentWindow;
+  return getMinsDay(tramoSet);
+}
+
+function countSvcs(subset){
+  let n=0;
+  subset.forEach(r=>{ if(r.servicios) n+=r.servicios.split(" | ").filter(x=>x.trim()).length; });
   return n;
 }
 
+function fmtDec(v){ return v.toFixed(1).replace(".",","); }
+
 // ── Render ────────────────────────────────────────────────────────────────────
 
-function render() {
+function render(){
   const now = new Date();
 
-  // ── Filtrar por fecha seleccionada ──
-  const daySet = selectedDate
-    ? records.filter(r => dateKey(r.date) === selectedDate)
-    : records;
+  // Filtrar por fecha seleccionada
+  const daySet = selectedDate ? records.filter(r=>dateKey(r.date)===selectedDate) : records;
 
-  // ── RESUMEN TOTALES (día completo) ──
-  const dayProv = daySet.filter(r => r.punto === "Providencia");
-  const dayNunu = daySet.filter(r => r.punto === "Ñuñoa");
+  // ── TRANSACCIONES TOTALES (día completo) ──
+  const dayProv  = daySet.filter(r=>r.punto==="Providencia");
+  const dayNunu  = daySet.filter(r=>r.punto==="Ñuñoa");
   const resProv  = countSvcs(dayProv);
   const resNunu  = countSvcs(dayNunu);
-  const resTotal = resProv + resNunu;
+  const resTotal = resProv+resNunu;
+  const minsDay  = getMinsDay(daySet);
+
+  document.getElementById("res-prov").textContent       = resProv;
+  document.getElementById("rate-res-prov").textContent  = fmtRate(resProv, minsDay);
+  document.getElementById("res-nunu").textContent       = resNunu;
+  document.getElementById("rate-res-nunu").textContent  = fmtRate(resNunu, minsDay);
+  document.getElementById("res-total").textContent      = resTotal;
+  document.getElementById("rate-res-total").textContent = fmtRate(resTotal, minsDay);
+
+  // ── AFILIADOS ATENDIDOS (día completo) ──
   const afiCount = daySet.length;
-  const afiRatio = afiCount > 0 ? fmtDec(resTotal / afiCount) : "—";
+  const afiRatio = afiCount>0 ? fmtDec(resTotal/afiCount) : "—";
+  document.getElementById("afi-count").textContent      = afiCount;
+  document.getElementById("rate-afi-count").textContent = fmtRate(afiCount, minsDay);
+  document.getElementById("afi-ratio").textContent      = afiRatio;
 
-  document.getElementById("res-prov").textContent  = resProv;
-  document.getElementById("res-nunu").textContent  = resNunu;
-  document.getElementById("res-total").textContent = resTotal;
-  document.getElementById("afi-count").textContent = afiCount;
-  document.getElementById("afi-ratio").textContent = afiRatio;
+  // ── TRAMO HORARIO ──
+  const isTotal = currentWindow===0;
+  const cutoff  = isTotal ? new Date(0) : new Date(now.getTime()-currentWindow*60000);
+  const tramoSet = isTotal ? daySet : daySet.filter(r=>r.date>=cutoff);
+  const minsTramo = getMinsTramo(tramoSet.length ? tramoSet : daySet);
 
-  // ── Filtrar por tramo horario ──
-  const isTotal = currentWindow === 0;
-  const cutoff  = isTotal ? new Date(0) : new Date(now.getTime() - currentWindow * 60000);
-  const tramoSet = isTotal ? daySet : daySet.filter(r => r.date >= cutoff);
-  const mins = getMins();
+  const tramoProv  = tramoSet.filter(r=>r.punto==="Providencia");
+  const tramoNunu  = tramoSet.filter(r=>r.punto==="Ñuñoa");
+  const tProv  = countSvcs(tramoProv);
+  const tNunu  = countSvcs(tramoNunu);
+  const tTotal = tProv+tNunu;
 
-  const tramoProv  = tramoSet.filter(r => r.punto === "Providencia");
-  const tramoNunu  = tramoSet.filter(r => r.punto === "Ñuñoa");
-  const tProvSvcs  = countSvcs(tramoProv);
-  const tNunuSvcs  = countSvcs(tramoNunu);
-  const tTotalSvcs = tProvSvcs + tNunuSvcs;
+  document.getElementById("tramo-prov").textContent       = tProv;
+  document.getElementById("rate-tramo-prov").textContent  = fmtRate(tProv, minsTramo);
+  document.getElementById("tramo-nunu").textContent       = tNunu;
+  document.getElementById("rate-tramo-nunu").textContent  = fmtRate(tNunu, minsTramo);
+  document.getElementById("tramo-total").textContent      = tTotal;
+  document.getElementById("rate-tramo-total").textContent = fmtRate(tTotal, minsTramo);
 
-  document.getElementById("tramo-prov").textContent       = tProvSvcs;
-  document.getElementById("rate-tramo-prov").textContent  = fmtRate(tProvSvcs, mins);
-  document.getElementById("tramo-nunu").textContent       = tNunuSvcs;
-  document.getElementById("rate-tramo-nunu").textContent  = fmtRate(tNunuSvcs, mins);
-  document.getElementById("tramo-total").textContent      = tTotalSvcs;
-  document.getElementById("rate-tramo-total").textContent = fmtRate(tTotalSvcs, mins);
-
-  // ── Barras dobles: Kits | Bicis | Mecánica × Providencia / Ñuñoa ──
+  // ── BARRAS: Kits | Bicis | Mecánica × Prov/Ñuñoa ──
   const svcByPunto = {};
-  SVC_ORDER.forEach(s => { svcByPunto[s] = { prov: 0, nunu: 0 }; });
-  tramoSet.forEach(r => {
-    if (!r.servicios) return;
-    r.servicios.split(" | ").forEach(s => {
-      s = s.trim();
-      if (s in svcByPunto) {
-        if (r.punto === "Providencia") svcByPunto[s].prov++;
-        else if (r.punto === "Ñuñoa")  svcByPunto[s].nunu++;
+  SVC_ORDER.forEach(s=>{ svcByPunto[s]={prov:0,nunu:0}; });
+
+  tramoSet.forEach(r=>{
+    if(!r.servicios) return;
+    r.servicios.split(" | ").forEach(s=>{
+      const key = s.trim();
+      if(key in svcByPunto){
+        if(r.punto==="Providencia") svcByPunto[key].prov++;
+        else if(r.punto==="Ñuñoa")  svcByPunto[key].nunu++;
       }
     });
   });
 
-  const allVals = SVC_ORDER.flatMap(s => [svcByPunto[s].prov, svcByPunto[s].nunu]);
-  const maxVal  = Math.max(...allVals, 1);
+  const allVals = SVC_ORDER.flatMap(s=>[svcByPunto[s].prov,svcByPunto[s].nunu]);
+  const maxVal  = Math.max(...allVals,1);
   const BAR_H   = 150;
 
   const groupsWrap = document.getElementById("bars-groups");
   const namesWrap  = document.getElementById("bar-group-names");
-  groupsWrap.innerHTML = "";
-  namesWrap.innerHTML  = "";
+  groupsWrap.innerHTML=""; namesWrap.innerHTML="";
 
-  SVC_ORDER.forEach((svc, i) => {
-    const pv = svcByPunto[svc].prov;
-    const nv = svcByPunto[svc].nunu;
-    const ph = Math.max(3, Math.round((pv / maxVal) * BAR_H));
-    const nh = Math.max(3, Math.round((nv / maxVal) * BAR_H));
-
-    const group = document.createElement("div");
-    group.className = "bar-group";
-    group.innerHTML = `
-      <div class="bars-pair" style="height:${BAR_H}px; align-items:flex-end;">
+  SVC_ORDER.forEach((svc,i)=>{
+    const pv=svcByPunto[svc].prov, nv=svcByPunto[svc].nunu;
+    const ph=Math.max(3,Math.round((pv/maxVal)*BAR_H));
+    const nh=Math.max(3,Math.round((nv/maxVal)*BAR_H));
+    const group=document.createElement("div");
+    group.className="bar-group";
+    group.innerHTML=`
+      <div class="bars-pair" style="height:${BAR_H}px;align-items:flex-end;">
         <div class="bar-single">
           <div class="bar-val">${pv}</div>
-          <div class="bar-rect" style="height:${ph}px; background:${SVC_COLORS_PROV[i]};"></div>
+          <div class="bar-rect" style="height:${ph}px;background:${SVC_COLORS_PROV[i]};"></div>
           <div class="bar-sub">Prov</div>
         </div>
         <div class="bar-single">
           <div class="bar-val">${nv}</div>
-          <div class="bar-rect" style="height:${nh}px; background:${SVC_COLORS_NUNU[i]};"></div>
+          <div class="bar-rect" style="height:${nh}px;background:${SVC_COLORS_NUNU[i]};"></div>
           <div class="bar-sub">Ñuñoa</div>
         </div>
-      </div>
-    `;
+      </div>`;
     groupsWrap.appendChild(group);
-
-    const name = document.createElement("div");
-    name.className = "bar-group-name";
-    name.textContent = SVC_LABELS[i];
-    name.style.flex = "1";
-    name.style.textAlign = "center";
-    namesWrap.appendChild(name);
+    const nm=document.createElement("div");
+    nm.className="bar-group-name"; nm.textContent=SVC_LABELS[i];
+    namesWrap.appendChild(nm);
   });
 
-  // ── Afiliados usan servicios (tramo) ──
-  let s1 = 0, s2 = 0, s3 = 0;
-  tramoSet.forEach(r => {
-    if (!r.servicios) return;
-    const n = r.servicios.split(" | ").filter(x => x.trim()).length;
-    if (n === 1) s1++;
-    else if (n === 2) s2++;
-    else if (n >= 3) s3++;
+  // ── AFILIADOS USAN SERVICIOS (tramo) ──
+  let s1=0,s2=0,s3=0;
+  tramoSet.forEach(r=>{
+    if(!r.servicios) return;
+    const n=r.servicios.split(" | ").filter(x=>x.trim()).length;
+    if(n===1)s1++; else if(n===2)s2++; else if(n>=3)s3++;
   });
-  document.getElementById("val-s1").textContent = s1;
-  document.getElementById("val-s2").textContent = s2;
-  document.getElementById("val-s3").textContent = s3;
+  document.getElementById("val-s1").textContent=s1;
+  document.getElementById("val-s2").textContent=s2;
+  document.getElementById("val-s3").textContent=s3;
 
-  document.getElementById("last-updated").textContent =
-    "Actualizado " + now.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  document.getElementById("last-updated").textContent=
+    "Actualizado "+now.toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
 }
 
 // ── Selectores ────────────────────────────────────────────────────────────────
 
-function setWindow(mins) {
-  currentWindow = mins;
-  document.querySelectorAll(".btn-total, .tab").forEach(b =>
-    b.classList.toggle("active", +b.dataset.min === mins));
-  saveStateToURL();
-  render();
+function setWindow(mins){
+  currentWindow=mins;
+  document.querySelectorAll(".btn-total,.tab").forEach(b=>b.classList.toggle("active",+b.dataset.min===mins));
+  saveStateToURL(); render();
 }
 
-// ── Persistencia en URL ───────────────────────────────────────────────────────
+// ── URL persistence ───────────────────────────────────────────────────────────
 
-function saveStateToURL() {
-  const params = new URLSearchParams(window.location.search);
-  params.set("fecha", selectedDate || "");
-  params.set("ventana", String(currentWindow));
-  window.history.replaceState(null, "", window.location.pathname + "?" + params.toString());
+function saveStateToURL(){
+  const p=new URLSearchParams(window.location.search);
+  p.set("fecha",selectedDate||""); p.set("ventana",String(currentWindow));
+  window.history.replaceState(null,"",window.location.pathname+"?"+p.toString());
+}
+function loadStateFromURL(){
+  const p=new URLSearchParams(window.location.search);
+  return{fecha:p.get("fecha")||null,ventana:p.get("ventana")};
 }
 
-function loadStateFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  return { fecha: params.get("fecha") || null, ventana: params.get("ventana") };
+// ── Calendario ────────────────────────────────────────────────────────────────
+
+const DOW_NAMES   =["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const MONTH_NAMES =["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+let calViewYear,calViewMonth;
+
+function formatDateLong(ds){
+  const[y,m,d]=ds.split("-").map(Number);
+  const dt=new Date(y,m-1,d);
+  return DOW_NAMES[dt.getDay()]+" "+d+" "+MONTH_NAMES[m-1]+" "+y;
 }
-
-// ── Calendario custom ─────────────────────────────────────────────────────────
-
-const DOW_NAMES   = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
-const MONTH_NAMES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-let calViewYear, calViewMonth;
-
-function formatDateLong(dateStr) {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  const dt = new Date(y, m - 1, d);
-  return DOW_NAMES[dt.getDay()] + " " + d + " " + MONTH_NAMES[m-1] + " " + y;
+function updateDateBtnLabel(){
+  document.getElementById("date-btn").textContent=selectedDate?formatDateLong(selectedDate):"Seleccionar fecha";
 }
-
-function updateDateBtnLabel() {
-  document.getElementById("date-btn").textContent =
-    selectedDate ? formatDateLong(selectedDate) : "Seleccionar fecha";
-}
-
-function toggleCalendar() {
-  const popup = document.getElementById("cal-popup");
-  const opening = !popup.classList.contains("open");
-  popup.classList.toggle("open", opening);
-  if (opening) {
-    const ref = selectedDate || dateKey(new Date());
-    const [y, m] = ref.split("-").map(Number);
-    calViewYear = y; calViewMonth = m - 1;
-    renderCalendar();
+function toggleCalendar(){
+  const popup=document.getElementById("cal-popup");
+  const opening=!popup.classList.contains("open");
+  popup.classList.toggle("open",opening);
+  if(opening){
+    const ref=selectedDate||dateKey(new Date());
+    const[y,m]=ref.split("-").map(Number);
+    calViewYear=y; calViewMonth=m-1; renderCalendar();
   }
 }
-
-function calShiftMonth(delta) {
-  calViewMonth += delta;
-  if (calViewMonth < 0)  { calViewMonth = 11; calViewYear--; }
-  if (calViewMonth > 11) { calViewMonth = 0;  calViewYear++; }
+function calShiftMonth(delta){
+  calViewMonth+=delta;
+  if(calViewMonth<0){calViewMonth=11;calViewYear--;}
+  if(calViewMonth>11){calViewMonth=0;calViewYear++;}
   renderCalendar();
 }
-
-function calPickDay(d) {
-  selectedDate = calViewYear + "-" + String(calViewMonth+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
+function calPickDay(d){
+  selectedDate=calViewYear+"-"+String(calViewMonth+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
   updateDateBtnLabel();
   document.getElementById("cal-popup").classList.remove("open");
-  saveStateToURL();
-  render();
+  saveStateToURL(); render();
 }
-
-function renderCalendar() {
-  document.getElementById("cal-month-label").textContent = MONTH_NAMES[calViewMonth] + " " + calViewYear;
-  const grid = document.getElementById("cal-grid");
-  grid.innerHTML = "";
-  ["D","L","M","M","J","V","S"].forEach(d => {
-    const el = document.createElement("div");
-    el.className = "cal-dow"; el.textContent = d;
-    grid.appendChild(el);
-  });
-  const firstDow    = new Date(calViewYear, calViewMonth, 1).getDay();
-  const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
-  for (let i = 0; i < firstDow; i++) {
-    const el = document.createElement("div"); el.className = "cal-day empty";
-    grid.appendChild(el);
-  }
-  for (let d = 1; d <= daysInMonth; d++) {
-    const el  = document.createElement("div");
-    el.className = "cal-day";
-    const key = calViewYear + "-" + String(calViewMonth+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
-    if (key === selectedDate) el.classList.add("selected");
-    el.textContent = d;
-    el.onclick = () => calPickDay(d);
-    grid.appendChild(el);
+function renderCalendar(){
+  document.getElementById("cal-month-label").textContent=MONTH_NAMES[calViewMonth]+" "+calViewYear;
+  const grid=document.getElementById("cal-grid"); grid.innerHTML="";
+  ["D","L","M","M","J","V","S"].forEach(d=>{ const el=document.createElement("div"); el.className="cal-dow"; el.textContent=d; grid.appendChild(el); });
+  const first=new Date(calViewYear,calViewMonth,1).getDay();
+  const days =new Date(calViewYear,calViewMonth+1,0).getDate();
+  for(let i=0;i<first;i++){ const el=document.createElement("div"); el.className="cal-day empty"; grid.appendChild(el); }
+  for(let d=1;d<=days;d++){
+    const el=document.createElement("div"); el.className="cal-day";
+    const key=calViewYear+"-"+String(calViewMonth+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+    if(key===selectedDate) el.classList.add("selected");
+    el.textContent=d; el.onclick=()=>calPickDay(d); grid.appendChild(el);
   }
 }
-
-document.addEventListener("click", e => {
-  const block = document.querySelector(".date-block");
-  if (block && !block.contains(e.target))
-    document.getElementById("cal-popup").classList.remove("open");
+document.addEventListener("click",e=>{
+  const b=document.querySelector(".date-block");
+  if(b&&!b.contains(e.target)) document.getElementById("cal-popup").classList.remove("open");
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
-(function init() {
-  const now    = new Date();
-  const saved  = loadStateFromURL();
-  selectedDate  = saved.fecha  || dateKey(now);
-  currentWindow = saved.ventana !== null && !isNaN(+saved.ventana) ? +saved.ventana : 0;
+(function init(){
+  const saved=loadStateFromURL();
+  selectedDate  = saved.fecha||dateKey(new Date());
+  currentWindow = saved.ventana!==null&&!isNaN(+saved.ventana)?+saved.ventana:0;
   updateDateBtnLabel();
-  document.querySelectorAll(".btn-total, .tab").forEach(b =>
-    b.classList.toggle("active", +b.dataset.min === currentWindow));
+  document.querySelectorAll(".btn-total,.tab").forEach(b=>b.classList.toggle("active",+b.dataset.min===currentWindow));
   saveStateToURL();
 })();
 
 fetchData();
-setInterval(fetchData, 30000);
+setInterval(fetchData,30000);
 </script>
 </body>
 </html>
