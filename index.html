@@ -37,7 +37,8 @@
   .strip { display: flex; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 14px; }
   .strip-item { flex: 1; padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
   .strip-item:last-child { border-right: none; }
-  .strip-label { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .strip-label { font-size: 1rem; color: var(--muted); font-weight: 800; margin-bottom: 4px; }
+  .strip-sublabel { font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 3px; }
   .strip-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
   .strip-rate  { font-size: 0.82rem; color: var(--muted); margin-top: 5px; font-weight: 600; }
   .strip-value.xl { font-size: 3.5rem; }
@@ -124,7 +125,7 @@
       <div class="strip-rate" id="rate-res-nunu">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">Total</div>
+      <div class="strip-label">TOTAL</div>
       <div class="strip-value xl" id="res-total">—</div>
       <div class="strip-rate" id="rate-res-total">—</div>
     </div>
@@ -156,7 +157,7 @@
     </div>
   </div>
 
-  <div class="section-label">Transacciones detalles</div>
+  <div class="section-label">Transacciones datos</div>
   <div class="strip">
     <div class="strip-item">
       <div class="strip-label">Providencia</div>
@@ -169,7 +170,7 @@
       <div class="strip-rate" id="rate-tramo-nunu">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">Total</div>
+      <div class="strip-label">TOTAL</div>
       <div class="strip-value" id="tramo-total">—</div>
       <div class="strip-rate" id="rate-tramo-total">—</div>
     </div>
@@ -182,19 +183,22 @@
 
   <hr class="divider">
 
-  <div class="section-label">Afiliados usan servicios</div>
+  <div class="section-label">Afiliados / Servicios</div>
   <div class="strip">
     <div class="strip-item">
       <div class="strip-label">1 Servicio</div>
       <div class="strip-value s1" id="val-s1">—</div>
+      <div class="strip-sublabel">afiliados</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">2 Servicios</div>
       <div class="strip-value s2" id="val-s2">—</div>
+      <div class="strip-sublabel">afiliados</div>
     </div>
     <div class="strip-item">
       <div class="strip-label">3 Servicios</div>
       <div class="strip-value s3" id="val-s3">—</div>
+      <div class="strip-sublabel">afiliados</div>
     </div>
   </div>
 
@@ -209,8 +213,8 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgndIP_bFGXJWb
 // Nombres EXACTOS tal como aparecen en el CSV (columna C)
 const SVC_ORDER  = ["Kit Agua-Fruta", "Bicicleta", "Mecánica"];
 const SVC_LABELS = ["Kits", "Bicis", "Mecánica"];
-const SVC_COLORS_PROV = ["#34d399", "#60a5fa", "#a78bfa"];
-const SVC_COLORS_NUNU = ["#059669", "#2563eb", "#7c3aed"];
+const SVC_COLORS_PROV = ["#f97316", "#f97316", "#f97316"];
+const SVC_COLORS_NUNU = ["#fde047", "#fde047", "#fde047"];
 
 let records = [];
 let currentWindow = 0;
@@ -299,8 +303,8 @@ function dateKey(d){
 
 // Tasa como "N x min." — count/mins con 1 decimal y coma
 function fmtRate(count, mins){
-  if(!count||!mins) return "—";
-  return (count/mins).toFixed(1).replace(".",","+" x min.");
+  if(!mins) return "—";
+  return (count/mins).toFixed(1).replace(".",",")+" x min.";
 }
 
 // Para las tasas de TOTALES: minutos desde el primer registro del día hasta ahora (o fin del día si es pasado)
@@ -361,7 +365,7 @@ function render(){
   const isTotal = currentWindow===0;
   const cutoff  = isTotal ? new Date(0) : new Date(now.getTime()-currentWindow*60000);
   const tramoSet = isTotal ? daySet : daySet.filter(r=>r.date>=cutoff);
-  const minsTramo = getMinsTramo(tramoSet.length ? tramoSet : daySet);
+  const minsTramo = getMinsTramo(daySet);
 
   const tramoProv  = tramoSet.filter(r=>r.punto==="Providencia");
   const tramoNunu  = tramoSet.filter(r=>r.punto==="Ñuñoa");
