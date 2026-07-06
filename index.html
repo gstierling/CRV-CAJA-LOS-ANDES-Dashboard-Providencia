@@ -134,21 +134,25 @@
   <div class="strip">
     <div class="strip-item">
       <div class="strip-label-xl">TOTAL</div>
-      <div class="strip-value xl" id="res-total">—</div>
+      <div style="display:flex;align-items:baseline;justify-content:center;gap:10px;">
+        <div class="strip-value xl" id="res-total">—</div>
+        <div class="strip-value" id="res-total-pct" style="font-size:3.15rem;color:rgba(255,255,255,0.7);">—</div>
+      </div>
       <div class="strip-rate-xl" id="rate-res-total">—</div>
     </div>
   </div>
 
-  <div class="section-label">Afiliados</div>
+  <div class="section-label">Afiliados atendidos</div>
   <div class="strip">
     <div class="strip-item">
-      <div class="strip-label-xl">Afiliados atendidos</div>
+      <div class="strip-label-xl">Afiliados</div>
       <div class="strip-value xl" id="afi-count">—</div>
       <div class="strip-rate" id="rate-afi-count">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">Servicios x afiliado</div>
+      <div class="strip-label-xl">Servicios</div>
       <div class="strip-value xl" id="afi-ratio">—</div>
+      <div class="strip-rate">x afiliado</div>
     </div>
   </div>
 
@@ -374,7 +378,8 @@ function render(){
   document.getElementById("res-nunu").textContent       = resNunu;
   document.getElementById("rate-res-nunu").textContent  = fmtRate(resNunu, minsDay);
   const totalPct = Math.round(resTotal / 806 * 100);
-  document.getElementById("res-total").textContent      = resTotal + " (" + totalPct + "%)";
+  document.getElementById("res-total").textContent     = resTotal;
+  document.getElementById("res-total-pct").textContent = "(" + totalPct + "%)";
   document.getElementById("rate-res-total").textContent = fmtRate(resTotal, minsDay);
 
   // ── AFILIADOS ATENDIDOS (día completo) ──
