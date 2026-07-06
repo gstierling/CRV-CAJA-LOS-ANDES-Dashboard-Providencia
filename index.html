@@ -75,20 +75,19 @@
   .tab { flex: 1; padding: 13px 10px; border-radius: 12px; border: 2px solid var(--border); font-size: 1rem; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; background: var(--surface); color: var(--white); transition: all 0.15s; text-align: center; }
   .tab:hover { background: rgba(0,0,0,0.35); }
   .tab.active { background: var(--orange); border-color: var(--orange); }
-  .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 18px 18px 14px; margin-bottom: 14px; }
-  .hbar-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+  .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 18px 18px 18px; margin-bottom: 14px; }
+  .hbar-group { margin-bottom: 22px; }
   .hbar-group:last-child { margin-bottom: 0; }
-  .hbar-left { width: 70px; flex-shrink: 0; text-align: right; }
-  .hbar-name { font-size: 1rem; font-weight: 900; color: rgba(255,255,255,0.9); line-height: 1.2; }
-  .hbar-total { font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 2px; }
-  .hbar-rows { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-  .hbar-row { display: flex; align-items: center; gap: 8px; position: relative; }
-  .hbar-track { flex: 1; height: 28px; background: rgba(0,0,0,0.2); border-radius: 6px; position: relative; overflow: visible; }
-  .hbar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; position: relative; }
-  .hbar-val { position: absolute; right: -34px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; font-weight: 900; color: var(--white); white-space: nowrap; }
-  .hbar-sublabel { font-size: 0.7rem; font-weight: 700; color: var(--muted); width: 38px; flex-shrink: 0; }
-  .hbar-meta { position: absolute; top: -4px; bottom: -4px; width: 2px; background: rgba(255,255,255,0.7); border-radius: 1px; }
-  .hbar-meta::after { content: attr(data-label); position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.8); white-space: nowrap; }
+  .hbar-heading { font-size: 1.5rem; font-weight: 900; color: rgba(255,255,255,0.95); margin-bottom: 8px; }
+  .hbar-rows { display: flex; flex-direction: column; gap: 8px; }
+  .hbar-row { display: flex; align-items: center; gap: 8px; }
+  .hbar-sublabel { font-size: 0.75rem; font-weight: 800; width: 42px; flex-shrink: 0; }
+  .hbar-track { flex: 1; height: 28px; background: rgba(0,0,0,0.2); border-radius: 6px; position: relative; }
+  .hbar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; min-width: 3px; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; position: relative; }
+  .hbar-val { font-size: 0.95rem; font-weight: 900; color: #000; white-space: nowrap; text-shadow: none; }
+  .hbar-val-out { font-size: 0.95rem; font-weight: 900; color: var(--white); white-space: nowrap; margin-left: 6px; }
+  .hbar-meta { position: absolute; top: -3px; bottom: -3px; width: 2px; background: rgba(255,255,255,0.85); border-radius: 1px; pointer-events: none; }
+  .hbar-meta::before { content: attr(data-label); position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.85); white-space: nowrap; }
   .bbdd-wrap { margin-top: 2.5rem; text-align: center; }
   .bbdd-btn { display: inline-block; padding: 12px 36px; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; color: #b2ebf2; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; letter-spacing: 0.1em; text-decoration: none; transition: all 0.15s; }
   .bbdd-btn:hover { background: rgba(0,0,0,0.35); border-color: #b2ebf2; }
@@ -421,7 +420,6 @@ function render(){
 
   const KIT_META = 280;
   const allVals = SVC_ORDER.flatMap(s=>[svcByPunto[s].prov, svcByPunto[s].nunu]);
-  // Para escalar, considerar también la meta de Kits
   const maxVal = Math.max(...allVals, KIT_META, 1);
 
   const card = document.getElementById("chart-card");
@@ -433,42 +431,40 @@ function render(){
     const totalSvc = pv + nv;
     const isKits = i === 0;
 
-    // Anchos como porcentaje del máximo
     const pPct = Math.min(100, (pv / maxVal) * 100);
     const nPct = Math.min(100, (nv / maxVal) * 100);
-    const metaPct = isKits ? Math.min(100, (KIT_META / maxVal) * 100) : null;
-
-    // Indicador de meta: si se supera la meta, la barra llega a 100% y la línea queda dentro
     const metaLeftPct = isKits ? Math.min(99, (KIT_META / maxVal) * 100) : null;
 
-    const metaProvHTML = isKits ? `<div class="hbar-meta" data-label="meta ${KIT_META}" style="left:${metaLeftPct}%;"></div>` : "";
-    const metaNunuHTML = isKits ? `<div class="hbar-meta" style="left:${metaLeftPct}%;"></div>` : "";
+    // Cifra: dentro de la barra si cabe (barra > 20%), fuera si es muy corta
+    function barContent(val, pct, color) {
+      const metaHTML = isKits ? `<div class="hbar-meta" data-label="meta ${KIT_META}" style="left:${metaLeftPct}%;"></div>` : "";
+      if (pct > 18) {
+        // Valor dentro de la barra al final
+        return `<div class="hbar-fill" style="width:${pct}%;background:${color};">
+                  <span class="hbar-val">${val}</span>
+                </div>${metaHTML}`;
+      } else {
+        // Barra corta: valor fuera a la derecha
+        return `<div style="display:flex;align-items:center;height:100%;position:relative;width:100%;">
+                  <div class="hbar-fill" style="width:${pct}%;background:${color};flex-shrink:0;height:100%;"></div>
+                  <span class="hbar-val-out">${val}</span>
+                  ${metaHTML}
+                </div>`;
+      }
+    }
 
     const group = document.createElement("div");
     group.className = "hbar-group";
     group.innerHTML = `
-      <div class="hbar-left">
-        <div class="hbar-name">${SVC_LABELS[i]}</div>
-        <div class="hbar-total">(${totalSvc})</div>
-      </div>
+      <div class="hbar-heading">${SVC_LABELS[i]} (${totalSvc})</div>
       <div class="hbar-rows">
         <div class="hbar-row">
           <div class="hbar-sublabel" style="color:var(--prov-color);">Prov</div>
-          <div class="hbar-track">
-            <div class="hbar-fill" style="width:${pPct}%;background:var(--prov-color);">
-            </div>
-            ${metaProvHTML}
-            <div class="hbar-val">${pv}</div>
-          </div>
+          <div class="hbar-track">${barContent(pv, pPct, "var(--prov-color)")}</div>
         </div>
         <div class="hbar-row">
           <div class="hbar-sublabel" style="color:var(--nunu-color);">Ñuñoa</div>
-          <div class="hbar-track">
-            <div class="hbar-fill" style="width:${nPct}%;background:var(--nunu-color);">
-            </div>
-            ${metaNunuHTML}
-            <div class="hbar-val">${nv}</div>
-          </div>
+          <div class="hbar-track">${barContent(nv, nPct, "var(--nunu-color)")}</div>
         </div>
       </div>`;
     card.appendChild(group);
