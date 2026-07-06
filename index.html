@@ -40,7 +40,7 @@
   .strip-label { font-size: 1rem; color: var(--muted); font-weight: 800; margin-bottom: 4px; }
   .strip-sublabel { font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 3px; }
   .strip-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
-  .strip-rate  { font-size: 0.82rem; color: var(--muted); margin-top: 5px; font-weight: 600; }
+  .strip-rate  { font-size: 1rem; color: rgba(255,255,255,0.9); margin-top: 5px; font-weight: 700; }
   .strip-value.xl { font-size: 3.5rem; }
   .strip-value.prov { color: var(--prov-color); }
   .strip-value.nunu { color: var(--nunu-color); }
@@ -114,7 +114,8 @@
   </div>
 
   <div class="section-label">Transacciones totales</div>
-  <div class="strip">
+  <!-- Fila 1: Providencia + Ñuñoa -->
+  <div class="strip" style="margin-bottom:6px;">
     <div class="strip-item">
       <div class="strip-label">Providencia</div>
       <div class="strip-value prov xl" id="res-prov">—</div>
@@ -125,6 +126,9 @@
       <div class="strip-value nunu xl" id="res-nunu">—</div>
       <div class="strip-rate" id="rate-res-nunu">—</div>
     </div>
+  </div>
+  <!-- Fila 2: TOTAL -->
+  <div class="strip">
     <div class="strip-item">
       <div class="strip-label">TOTAL</div>
       <div class="strip-value xl" id="res-total">—</div>
@@ -159,7 +163,8 @@
   </div>
 
   <div class="section-label">Transacciones datos</div>
-  <div class="strip">
+  <!-- Fila 1: Providencia + Ñuñoa -->
+  <div class="strip" style="margin-bottom:6px;">
     <div class="strip-item">
       <div class="strip-label">Providencia</div>
       <div class="strip-value prov" id="tramo-prov">—</div>
@@ -170,6 +175,9 @@
       <div class="strip-value nunu" id="tramo-nunu">—</div>
       <div class="strip-rate" id="rate-tramo-nunu">—</div>
     </div>
+  </div>
+  <!-- Fila 2: TOTAL -->
+  <div class="strip">
     <div class="strip-item">
       <div class="strip-label">TOTAL</div>
       <div class="strip-value" id="tramo-total">—</div>
@@ -320,14 +328,15 @@ function fmtRate(count, mins){
   }
 }
 
-// Para las tasas de TOTALES: minutos desde el primer registro del día hasta ahora (o fin del día si es pasado)
+// Para las tasas de TOTAL: desde las 9:00 hasta min(ahora, 14:05) del día seleccionado
 function getMinsDay(daySet){
-  if(!daySet.length) return 1;
   const now = new Date();
-  const oldest = daySet.reduce((mn,r)=>r.date<mn?r.date:mn, daySet[0].date);
-  const isToday = dateKey(oldest)===dateKey(now);
-  const end = isToday ? now : new Date(oldest.getFullYear(),oldest.getMonth(),oldest.getDate(),23,59,59);
-  return Math.max(1, Math.round((end-oldest)/60000));
+  const ref = daySet.length ? daySet[0].date : now;
+  const base = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate());
+  const start = new Date(base); start.setHours(9, 0, 0, 0);
+  const cutoff1405 = new Date(base); cutoff1405.setHours(14, 5, 0, 0);
+  const end = now < cutoff1405 ? now : cutoff1405;
+  return Math.max(1, Math.round((end - start) / 60000));
 }
 
 // Para las tasas de TRAMO: simplemente el tramo en minutos (15/30/60), o desde primer registro si TOTAL
