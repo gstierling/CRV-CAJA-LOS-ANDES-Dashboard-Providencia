@@ -82,11 +82,10 @@
   .hbar-rows { display: flex; flex-direction: column; gap: 8px; }
   .hbar-row { display: flex; align-items: center; gap: 8px; }
   .hbar-sublabel { font-size: 0.75rem; font-weight: 800; width: 42px; flex-shrink: 0; }
-  .hbar-track { flex: 1; height: 28px; background: rgba(0,0,0,0.2); border-radius: 6px; position: relative; }
-  .hbar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; min-width: 3px; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; position: relative; }
-  .hbar-val { font-size: 0.95rem; font-weight: 900; color: #000; white-space: nowrap; text-shadow: none; }
-  .hbar-val-out { font-size: 0.95rem; font-weight: 900; color: var(--white); white-space: nowrap; margin-left: 6px; }
-  .hbar-meta { position: absolute; top: -3px; bottom: -3px; width: 2px; background: rgba(255,255,255,0.85); border-radius: 1px; pointer-events: none; }
+  .hbar-track { flex: 1; height: 28px; background: rgba(0,0,0,0.2); border-radius: 6px; position: relative; overflow: visible; }
+  .hbar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; min-width: 3px; position: absolute; top: 0; left: 0; }
+  .hbar-val-out { position: absolute; top: 50%; transform: translateY(-50%); font-size: 0.95rem; font-weight: 900; color: var(--white); white-space: nowrap; }
+  .hbar-meta { position: absolute; top: -4px; bottom: -4px; width: 2px; background: rgba(255,255,255,0.85); border-radius: 1px; pointer-events: none; z-index: 2; }
   .hbar-meta::before { content: attr(data-label); position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.85); white-space: nowrap; }
   .bbdd-wrap { margin-top: 2.5rem; text-align: center; }
   .bbdd-btn { display: inline-block; padding: 12px 36px; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; color: #b2ebf2; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; letter-spacing: 0.1em; text-decoration: none; transition: all 0.15s; }
@@ -140,10 +139,10 @@
     </div>
   </div>
 
-  <div class="section-label">Afiliados atendidos</div>
+  <div class="section-label">Afiliados</div>
   <div class="strip">
     <div class="strip-item">
-      <div class="strip-label">Afiliados atendidos</div>
+      <div class="strip-label-xl">Afiliados atendidos</div>
       <div class="strip-value xl" id="afi-count">—</div>
       <div class="strip-rate" id="rate-afi-count">—</div>
     </div>
@@ -374,7 +373,8 @@ function render(){
   document.getElementById("rate-res-prov").textContent  = fmtRate(resProv, minsDay);
   document.getElementById("res-nunu").textContent       = resNunu;
   document.getElementById("rate-res-nunu").textContent  = fmtRate(resNunu, minsDay);
-  document.getElementById("res-total").textContent      = resTotal;
+  const totalPct = Math.round(resTotal / 806 * 100);
+  document.getElementById("res-total").textContent      = resTotal + " (" + totalPct + "%)";
   document.getElementById("rate-res-total").textContent = fmtRate(resTotal, minsDay);
 
   // ── AFILIADOS ATENDIDOS (día completo) ──
@@ -418,9 +418,10 @@ function render(){
     });
   });
 
-  const KIT_META = 280;
+  const KIT_META     = 280;
+  const KIT_TOTAL_META = 560;
   const allVals = SVC_ORDER.flatMap(s=>[svcByPunto[s].prov, svcByPunto[s].nunu]);
-  const maxVal = Math.max(...allVals, KIT_META, 1);
+  const maxVal  = Math.max(...allVals, KIT_META, 1);
 
   const card = document.getElementById("chart-card");
   card.innerHTML = "";
@@ -429,42 +430,47 @@ function render(){
     const pv = svcByPunto[svc].prov;
     const nv = svcByPunto[svc].nunu;
     const totalSvc = pv + nv;
-    const isKits = i === 0;
+    const isKits   = i === 0;
 
     const pPct = Math.min(100, (pv / maxVal) * 100);
     const nPct = Math.min(100, (nv / maxVal) * 100);
-    const metaLeftPct = isKits ? Math.min(99, (KIT_META / maxVal) * 100) : null;
+    const metaLeftPct = isKits ? (KIT_META / maxVal) * 100 : null;
 
-    // Cifra: dentro de la barra si cabe (barra > 20%), fuera si es muy corta
-    function barContent(val, pct, color) {
-      const metaHTML = isKits ? `<div class="hbar-meta" data-label="meta ${KIT_META}" style="left:${metaLeftPct}%;"></div>` : "";
-      if (pct > 18) {
-        // Valor dentro de la barra al final
-        return `<div class="hbar-fill" style="width:${pct}%;background:${color};">
-                  <span class="hbar-val">${val}</span>
-                </div>${metaHTML}`;
-      } else {
-        // Barra corta: valor fuera a la derecha
-        return `<div style="display:flex;align-items:center;height:100%;position:relative;width:100%;">
-                  <div class="hbar-fill" style="width:${pct}%;background:${color};flex-shrink:0;height:100%;"></div>
-                  <span class="hbar-val-out">${val}</span>
-                  ${metaHTML}
-                </div>`;
-      }
+    // Encabezado: para Kits incluye % sobre 560
+    let heading = SVC_LABELS[i] + " (" + totalSvc + ")";
+    if (isKits) {
+      const kitsPct = (totalSvc / KIT_TOTAL_META * 100).toFixed(1).replace(".", ",");
+      heading = SVC_LABELS[i] + " (" + totalSvc + ") (" + kitsPct + "%)";
+    }
+
+    // Genera una barra horizontal con cifra SIEMPRE fuera (a la derecha del fill)
+    // La meta solo aparece en la barra de Providencia (primera) y solo para Kits
+    function makeBar(val, pct, color, showMeta) {
+      // La línea de meta se dibuja dentro del track (absolute), no dentro del fill
+      // para no interferir con la cifra
+      const metaHTML = showMeta
+        ? `<div class="hbar-meta" data-label="meta ${KIT_META}" style="left:${metaLeftPct}%;"></div>`
+        : "";
+      return `
+        <div class="hbar-track">
+          <div class="hbar-fill" style="width:${pct}%;background:${color};"></div>
+          ${metaHTML}
+          <span class="hbar-val-out" style="left:calc(${pct}% + 6px);">${val}</span>
+        </div>`;
     }
 
     const group = document.createElement("div");
     group.className = "hbar-group";
     group.innerHTML = `
-      <div class="hbar-heading">${SVC_LABELS[i]} (${totalSvc})</div>
+      <div class="hbar-heading">${heading}</div>
       <div class="hbar-rows">
         <div class="hbar-row">
-          <div class="hbar-sublabel" style="color:var(--prov-color);">Prov</div>
-          <div class="hbar-track">${barContent(pv, pPct, "var(--prov-color)")}</div>
+          <div class="hbar-sublabel" style="color:var(--prov-color);">Provi</div>
+          ${makeBar(pv, pPct, "var(--prov-color)", isKits)}
         </div>
         <div class="hbar-row">
           <div class="hbar-sublabel" style="color:var(--nunu-color);">Ñuñoa</div>
-          <div class="hbar-track">${barContent(nv, nPct, "var(--nunu-color)")}</div>
+          ${makeBar(nv, nPct, "var(--nunu-color)", false)}
         </div>
       </div>`;
     card.appendChild(group);
