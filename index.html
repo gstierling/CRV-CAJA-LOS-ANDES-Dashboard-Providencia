@@ -38,10 +38,12 @@
   .strip-item { flex: 1; padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
   .strip-item:last-child { border-right: none; }
   .strip-label { font-size: 1rem; color: var(--muted); font-weight: 800; margin-bottom: 4px; }
+  .strip-label-xl { font-size: 1.3rem; color: rgba(255,255,255,0.85); font-weight: 900; margin-bottom: 4px; }
   .strip-sublabel { font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 3px; }
   .strip-value { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
   .strip-rate  { font-size: 1rem; color: rgba(255,255,255,0.9); margin-top: 5px; font-weight: 700; }
-  .strip-value.xl { font-size: 3.5rem; }
+  .strip-rate-xl { font-size: 1.15rem; color: rgba(255,255,255,0.95); margin-top: 6px; font-weight: 800; }
+  .strip-value.xl { font-size: 4.2rem; }
   .strip-value.prov { color: var(--prov-color); }
   .strip-value.nunu { color: var(--nunu-color); }
   .strip-value.s1 { color: #fde047; }
@@ -73,17 +75,20 @@
   .tab { flex: 1; padding: 13px 10px; border-radius: 12px; border: 2px solid var(--border); font-size: 1rem; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; background: var(--surface); color: var(--white); transition: all 0.15s; text-align: center; }
   .tab:hover { background: rgba(0,0,0,0.35); }
   .tab.active { background: var(--orange); border-color: var(--orange); }
-  .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 16px 0; margin-bottom: 14px; }
-  .bars-groups { display: flex; justify-content: space-around; align-items: flex-end; height: 180px; gap: 0; padding: 0 8px; }
-  .bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; padding: 0 6px; border-right: 1px solid rgba(255,255,255,0.12); }
-  .bar-group:last-child { border-right: none; }
-  .bar-group-names { display: flex; width: 100%; border-top: 1px solid var(--border); }
-  .bar-group-name { flex: 1; text-align: center; font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.85); padding: 10px 4px 12px; }
-  .bars-pair { display: flex; align-items: flex-end; gap: 4px; width: 100%; justify-content: center; }
-  .bar-single { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; max-width: 44px; }
-  .bar-val { font-size: 0.95rem; font-weight: 900; color: var(--white); margin-bottom: 4px; }
-  .bar-rect { width: 100%; border-radius: 6px 6px 0 0; min-height: 3px; }
-  .bar-sub { font-size: 0.65rem; font-weight: 700; color: var(--muted); text-align: center; margin-top: 4px; }
+  .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 18px 18px 14px; margin-bottom: 14px; }
+  .hbar-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+  .hbar-group:last-child { margin-bottom: 0; }
+  .hbar-left { width: 70px; flex-shrink: 0; text-align: right; }
+  .hbar-name { font-size: 1rem; font-weight: 900; color: rgba(255,255,255,0.9); line-height: 1.2; }
+  .hbar-total { font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 2px; }
+  .hbar-rows { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .hbar-row { display: flex; align-items: center; gap: 8px; position: relative; }
+  .hbar-track { flex: 1; height: 28px; background: rgba(0,0,0,0.2); border-radius: 6px; position: relative; overflow: visible; }
+  .hbar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; position: relative; }
+  .hbar-val { position: absolute; right: -34px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; font-weight: 900; color: var(--white); white-space: nowrap; }
+  .hbar-sublabel { font-size: 0.7rem; font-weight: 700; color: var(--muted); width: 38px; flex-shrink: 0; }
+  .hbar-meta { position: absolute; top: -4px; bottom: -4px; width: 2px; background: rgba(255,255,255,0.7); border-radius: 1px; }
+  .hbar-meta::after { content: attr(data-label); position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.8); white-space: nowrap; }
   .bbdd-wrap { margin-top: 2.5rem; text-align: center; }
   .bbdd-btn { display: inline-block; padding: 12px 36px; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; color: #b2ebf2; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; letter-spacing: 0.1em; text-decoration: none; transition: all 0.15s; }
   .bbdd-btn:hover { background: rgba(0,0,0,0.35); border-color: #b2ebf2; }
@@ -117,22 +122,22 @@
   <!-- Fila 1: Providencia + Ñuñoa -->
   <div class="strip" style="margin-bottom:6px;">
     <div class="strip-item">
-      <div class="strip-label">Providencia</div>
+      <div class="strip-label-xl">Providencia</div>
       <div class="strip-value prov xl" id="res-prov">—</div>
-      <div class="strip-rate" id="rate-res-prov">—</div>
+      <div class="strip-rate-xl" id="rate-res-prov">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">Ñuñoa</div>
+      <div class="strip-label-xl">Ñuñoa</div>
       <div class="strip-value nunu xl" id="res-nunu">—</div>
-      <div class="strip-rate" id="rate-res-nunu">—</div>
+      <div class="strip-rate-xl" id="rate-res-nunu">—</div>
     </div>
   </div>
   <!-- Fila 2: TOTAL -->
   <div class="strip">
     <div class="strip-item">
-      <div class="strip-label">TOTAL</div>
+      <div class="strip-label-xl">TOTAL</div>
       <div class="strip-value xl" id="res-total">—</div>
-      <div class="strip-rate" id="rate-res-total">—</div>
+      <div class="strip-rate-xl" id="rate-res-total">—</div>
     </div>
   </div>
 
@@ -166,29 +171,26 @@
   <!-- Fila 1: Providencia + Ñuñoa -->
   <div class="strip" style="margin-bottom:6px;">
     <div class="strip-item">
-      <div class="strip-label">Providencia</div>
-      <div class="strip-value prov" id="tramo-prov">—</div>
-      <div class="strip-rate" id="rate-tramo-prov">—</div>
+      <div class="strip-label-xl">Providencia</div>
+      <div class="strip-value prov xl" id="tramo-prov">—</div>
+      <div class="strip-rate-xl" id="rate-tramo-prov">—</div>
     </div>
     <div class="strip-item">
-      <div class="strip-label">Ñuñoa</div>
-      <div class="strip-value nunu" id="tramo-nunu">—</div>
-      <div class="strip-rate" id="rate-tramo-nunu">—</div>
+      <div class="strip-label-xl">Ñuñoa</div>
+      <div class="strip-value nunu xl" id="tramo-nunu">—</div>
+      <div class="strip-rate-xl" id="rate-tramo-nunu">—</div>
     </div>
   </div>
   <!-- Fila 2: TOTAL -->
   <div class="strip">
     <div class="strip-item">
-      <div class="strip-label">TOTAL</div>
-      <div class="strip-value" id="tramo-total">—</div>
-      <div class="strip-rate" id="rate-tramo-total">—</div>
+      <div class="strip-label-xl">TOTAL</div>
+      <div class="strip-value xl" id="tramo-total">—</div>
+      <div class="strip-rate-xl" id="rate-tramo-total">—</div>
     </div>
   </div>
 
-  <div class="chart-card">
-    <div class="bars-groups" id="bars-groups"></div>
-    <div class="bar-group-names" id="bar-group-names"></div>
-  </div>
+  <div class="chart-card" id="chart-card"></div>
 
   <hr class="divider">
 
@@ -402,7 +404,7 @@ function render(){
   document.getElementById("tramo-total").textContent      = tTotal;
   document.getElementById("rate-tramo-total").textContent = fmtRate(tTotal, minsTramo);
 
-  // ── BARRAS: Kits | Bicis | Mecánica × Prov/Ñuñoa ──
+  // ── BARRAS HORIZONTALES: Kits | Bicis | Mecánica × Prov/Ñuñoa ──
   const svcByPunto = {};
   SVC_ORDER.forEach(s=>{ svcByPunto[s]={prov:0,nunu:0}; });
 
@@ -417,37 +419,59 @@ function render(){
     });
   });
 
-  const allVals = SVC_ORDER.flatMap(s=>[svcByPunto[s].prov,svcByPunto[s].nunu]);
-  const maxVal  = Math.max(...allVals,1);
-  const BAR_H   = 150;
+  const KIT_META = 280;
+  const allVals = SVC_ORDER.flatMap(s=>[svcByPunto[s].prov, svcByPunto[s].nunu]);
+  // Para escalar, considerar también la meta de Kits
+  const maxVal = Math.max(...allVals, KIT_META, 1);
 
-  const groupsWrap = document.getElementById("bars-groups");
-  const namesWrap  = document.getElementById("bar-group-names");
-  groupsWrap.innerHTML=""; namesWrap.innerHTML="";
+  const card = document.getElementById("chart-card");
+  card.innerHTML = "";
 
-  SVC_ORDER.forEach((svc,i)=>{
-    const pv=svcByPunto[svc].prov, nv=svcByPunto[svc].nunu;
-    const ph=Math.max(3,Math.round((pv/maxVal)*BAR_H));
-    const nh=Math.max(3,Math.round((nv/maxVal)*BAR_H));
-    const group=document.createElement("div");
-    group.className="bar-group";
-    group.innerHTML=`
-      <div class="bars-pair" style="height:${BAR_H}px;align-items:flex-end;">
-        <div class="bar-single">
-          <div class="bar-val">${pv}</div>
-          <div class="bar-rect" style="height:${ph}px;background:${SVC_COLORS_PROV[i]};"></div>
-          <div class="bar-sub">Prov</div>
+  SVC_ORDER.forEach((svc, i)=>{
+    const pv = svcByPunto[svc].prov;
+    const nv = svcByPunto[svc].nunu;
+    const totalSvc = pv + nv;
+    const isKits = i === 0;
+
+    // Anchos como porcentaje del máximo
+    const pPct = Math.min(100, (pv / maxVal) * 100);
+    const nPct = Math.min(100, (nv / maxVal) * 100);
+    const metaPct = isKits ? Math.min(100, (KIT_META / maxVal) * 100) : null;
+
+    // Indicador de meta: si se supera la meta, la barra llega a 100% y la línea queda dentro
+    const metaLeftPct = isKits ? Math.min(99, (KIT_META / maxVal) * 100) : null;
+
+    const metaProvHTML = isKits ? `<div class="hbar-meta" data-label="meta ${KIT_META}" style="left:${metaLeftPct}%;"></div>` : "";
+    const metaNunuHTML = isKits ? `<div class="hbar-meta" style="left:${metaLeftPct}%;"></div>` : "";
+
+    const group = document.createElement("div");
+    group.className = "hbar-group";
+    group.innerHTML = `
+      <div class="hbar-left">
+        <div class="hbar-name">${SVC_LABELS[i]}</div>
+        <div class="hbar-total">(${totalSvc})</div>
+      </div>
+      <div class="hbar-rows">
+        <div class="hbar-row">
+          <div class="hbar-sublabel" style="color:var(--prov-color);">Prov</div>
+          <div class="hbar-track">
+            <div class="hbar-fill" style="width:${pPct}%;background:var(--prov-color);">
+            </div>
+            ${metaProvHTML}
+            <div class="hbar-val">${pv}</div>
+          </div>
         </div>
-        <div class="bar-single">
-          <div class="bar-val">${nv}</div>
-          <div class="bar-rect" style="height:${nh}px;background:${SVC_COLORS_NUNU[i]};"></div>
-          <div class="bar-sub">Ñuñoa</div>
+        <div class="hbar-row">
+          <div class="hbar-sublabel" style="color:var(--nunu-color);">Ñuñoa</div>
+          <div class="hbar-track">
+            <div class="hbar-fill" style="width:${nPct}%;background:var(--nunu-color);">
+            </div>
+            ${metaNunuHTML}
+            <div class="hbar-val">${nv}</div>
+          </div>
         </div>
       </div>`;
-    groupsWrap.appendChild(group);
-    const nm=document.createElement("div");
-    nm.className="bar-group-name"; nm.textContent=SVC_LABELS[i];
-    namesWrap.appendChild(nm);
+    card.appendChild(group);
   });
 
   // ── AFILIADOS USAN SERVICIOS (tramo) ──
