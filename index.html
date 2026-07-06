@@ -54,15 +54,15 @@
   .date-label { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
   .date-btn { background: var(--surface); border: 2px solid var(--border); border-radius: 14px; color: var(--white); font-family: 'Nunito', sans-serif; font-size: 1.3rem; font-weight: 800; padding: 10px 28px; cursor: pointer; text-align: center; width: 100%; max-width: 420px; }
   .date-btn:hover { border-color: var(--orange); }
-  .cal-popup { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #00565f; border: 2px solid var(--border); border-radius: 14px; padding: 14px; z-index: 50; width: 280px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+  .cal-popup { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #00565f; border: 2px solid var(--border); border-radius: 14px; padding: 14px; z-index: 50; width: 140px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
   .cal-popup.open { display: block; }
   .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .cal-nav button { background: transparent; border: none; color: var(--white); font-size: 1.2rem; font-weight: 900; cursor: pointer; padding: 4px 10px; border-radius: 8px; }
   .cal-nav button:hover { background: rgba(255,255,255,0.12); }
-  .cal-month-label { font-size: 1rem; font-weight: 800; text-transform: capitalize; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+  .cal-month-label { font-size: 0.85rem; font-weight: 800; text-transform: capitalize; }
+  .cal-grid { display: grid; grid-template-columns: 1fr; gap: 4px; }
   .cal-dow { font-size: 0.7rem; font-weight: 800; color: var(--muted); text-align: center; padding: 4px 0; }
-  .cal-day { font-size: 0.85rem; font-weight: 700; text-align: center; padding: 8px 0; border-radius: 8px; cursor: pointer; color: var(--white); }
+  .cal-day { font-size: 1rem; font-weight: 700; text-align: center; padding: 10px 0; border-radius: 8px; cursor: pointer; color: var(--white); }
   .cal-day:hover { background: rgba(255,255,255,0.15); }
   .cal-day.empty { cursor: default; } .cal-day.empty:hover { background: transparent; }
   .cal-day.selected { background: var(--orange); }
@@ -134,9 +134,9 @@
   <div class="strip">
     <div class="strip-item">
       <div class="strip-label-xl">TOTAL</div>
-      <div style="display:flex;align-items:baseline;justify-content:center;gap:10px;">
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
         <div class="strip-value xl" id="res-total">—</div>
-        <div class="strip-value" id="res-total-pct" style="font-size:3.15rem;color:rgba(255,255,255,0.7);">—</div>
+        <div class="strip-value" id="res-total-pct" style="font-size:2.94rem;color:rgba(255,255,255,0.7);line-height:1;">—</div>
       </div>
       <div class="strip-rate-xl" id="rate-res-total">—</div>
     </div>
@@ -481,6 +481,57 @@ function render(){
     card.appendChild(group);
   });
 
+  // ── Barra TOTAL apilada: segmentos Kits / Bicis / Mecánica por punto ──
+  const SEG_COLORS = ["#34d399", "#60a5fa", "#a78bfa"]; // Kits, Bicis, Mecánica
+  const totalProvAll = SVC_ORDER.reduce((s,svc)=>s+svcByPunto[svc].prov, 0);
+  const totalNunuAll = SVC_ORDER.reduce((s,svc)=>s+svcByPunto[svc].nunu, 0);
+  const totalAll     = totalProvAll + totalNunuAll;
+  const stackMax     = Math.max(totalProvAll, totalNunuAll, 1);
+
+  function makeStackedBar(vals, total, colors) {
+    const segments = vals.map((v, i) => {
+      const pct = (v / stackMax) * 100;
+      return `<div style="width:${pct}%;background:${colors[i]};height:100%;position:relative;min-width:${v>0?2:0}px;display:flex;align-items:center;justify-content:center;">
+        ${v > 0 ? `<span style="font-size:0.8rem;font-weight:900;color:rgba(0,0,0,0.7);white-space:nowrap;">${v}</span>` : ""}
+      </div>`;
+    }).join("");
+    const totalPct = (total / stackMax) * 100;
+    return `
+      <div class="hbar-track" style="display:flex;overflow:visible;">
+        ${segments}
+        <span class="hbar-val-out" style="left:calc(${totalPct}% + 6px);">${total}</span>
+      </div>`;
+  }
+
+  const provVals = SVC_ORDER.map(svc=>svcByPunto[svc].prov);
+  const nunuVals = SVC_ORDER.map(svc=>svcByPunto[svc].nunu);
+
+  // Leyenda de colores
+  const legendHTML = SVC_LABELS.map((lbl,i)=>
+    `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;">
+       <span style="width:10px;height:10px;border-radius:3px;background:${SEG_COLORS[i]};display:inline-block;"></span>
+       <span style="font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.75);">${lbl}</span>
+     </span>`
+  ).join("");
+
+  const totalGroup = document.createElement("div");
+  totalGroup.className = "hbar-group";
+  totalGroup.style.cssText = "border-top:1px solid rgba(255,255,255,0.18);padding-top:16px;margin-top:6px;";
+  totalGroup.innerHTML = `
+    <div class="hbar-heading" style="margin-bottom:4px;">Total (${totalAll})</div>
+    <div style="margin-bottom:10px;">${legendHTML}</div>
+    <div class="hbar-rows">
+      <div class="hbar-row">
+        <div class="hbar-sublabel" style="color:var(--prov-color);">Provi</div>
+        ${makeStackedBar(provVals, totalProvAll, SEG_COLORS)}
+      </div>
+      <div class="hbar-row">
+        <div class="hbar-sublabel" style="color:var(--nunu-color);">Ñuñoa</div>
+        ${makeStackedBar(nunuVals, totalNunuAll, SEG_COLORS)}
+      </div>
+    </div>`;
+  card.appendChild(totalGroup);
+
   // ── AFILIADOS USAN SERVICIOS (tramo) ──
   let s1=0,s2=0,s3=0;
   tramoSet.forEach(r=>{
@@ -555,11 +606,13 @@ function calPickDay(d){
 function renderCalendar(){
   document.getElementById("cal-month-label").textContent=MONTH_NAMES[calViewMonth]+" "+calViewYear;
   const grid=document.getElementById("cal-grid"); grid.innerHTML="";
-  ["D","L","M","M","J","V","S"].forEach(d=>{ const el=document.createElement("div"); el.className="cal-dow"; el.textContent=d; grid.appendChild(el); });
-  const first=new Date(calViewYear,calViewMonth,1).getDay();
-  const days =new Date(calViewYear,calViewMonth+1,0).getDate();
-  for(let i=0;i<first;i++){ const el=document.createElement("div"); el.className="cal-day empty"; grid.appendChild(el); }
+  // Solo una columna: Domingos
+  const dow=document.createElement("div"); dow.className="cal-dow"; dow.textContent="Dom";
+  grid.appendChild(dow);
+  const days=new Date(calViewYear,calViewMonth+1,0).getDate();
   for(let d=1;d<=days;d++){
+    const dt=new Date(calViewYear,calViewMonth,d);
+    if(dt.getDay()!==0) continue; // solo domingos
     const el=document.createElement("div"); el.className="cal-day";
     const key=calViewYear+"-"+String(calViewMonth+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
     if(key===selectedDate) el.classList.add("selected");
