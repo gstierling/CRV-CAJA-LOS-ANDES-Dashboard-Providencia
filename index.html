@@ -225,7 +225,7 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgndIP_bFGXJWb
 
 // Nombres EXACTOS tal como aparecen en el CSV (columna C)
 const SVC_ORDER  = ["Kit Agua-Fruta", "Bicicleta", "Mecánica"];
-const SVC_LABELS = ["Kits", "Bicis", "Mecánica"];
+const SVC_LABELS = ["Kits", "Chequeo salud", "Mecánica"];
 const SVC_COLORS_PROV = ["#f97316", "#f97316", "#f97316"];
 const SVC_COLORS_NUNU = ["#fde047", "#fde047", "#fde047"];
 
@@ -408,7 +408,7 @@ function render(){
   document.getElementById("tramo-total").textContent      = tTotal;
   document.getElementById("rate-tramo-total").textContent = fmtRate(tTotal, minsTramo);
 
-  // ── BARRAS HORIZONTALES: Kits | Bicis | Mecánica × Prov/Ñuñoa ──
+  // ── BARRAS HORIZONTALES: Kits | Chequeo salud | Mecánica × Prov/Ñuñoa ──
   const svcByPunto = {};
   SVC_ORDER.forEach(s=>{ svcByPunto[s]={prov:0,nunu:0}; });
 
@@ -481,8 +481,8 @@ function render(){
     card.appendChild(group);
   });
 
-  // ── Barra TOTAL apilada: segmentos Kits / Bicis / Mecánica por punto ──
-  const SEG_COLORS = ["#34d399", "#60a5fa", "#a78bfa"]; // Kits, Bicis, Mecánica
+  // ── Barra TOTAL apilada: segmentos Kits / Chequeo salud / Mecánica por punto ──
+  const SEG_COLORS = ["#34d399", "#60a5fa", "#a78bfa"]; // Kits, Chequeo salud, Mecánica
   const totalProvAll = SVC_ORDER.reduce((s,svc)=>s+svcByPunto[svc].prov, 0);
   const totalNunuAll = SVC_ORDER.reduce((s,svc)=>s+svcByPunto[svc].nunu, 0);
   const totalAll     = totalProvAll + totalNunuAll;
